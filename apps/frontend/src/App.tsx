@@ -1,44 +1,35 @@
-import { useState, useCallback, useEffect } from 'react';
+import { ThemeProvider } from '@/components/theme-provider';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import Loader from '@/components/common/loading/loading';
 
-function App() {
-	const [hello, setHello] = useState('');
-	const [open, setOpen] = useState(false);
-	const [check, setCheck] = useState({
-		name: '',
-		email: '',
-		password: '',
-	});
+const Main = lazy(() => import('@/router/main'));
+const Home = lazy(() => import('@/components/layouts/home'));
+const About = lazy(() => import('@/components/layouts/about'));
 
-	const checkData = useCallback(async () => {
-		const response = await fetch('/api/check', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
+const router = createBrowserRouter([
+	{
+		path: '/',
+		Component: Main,
+		children: [
+			{
+				path: '/',
+				Component: Home,
 			},
-		});
+			{
+				path: '/about',
+				Component: About,
+			},
+		],
+	},
+]);
 
-		const data = await response.json();
-		setCheck(data);
-		setOpen(!open);
-	}, [setCheck, setOpen, open]);
-
-	useEffect(() => {
-		fetch('/api')
-			.then((response) => response.text())
-			.then((data) => setHello(data));
-	}, [setHello]);
-
+export default function App() {
 	return (
-		<>
-			<h1>{open && hello}</h1>
-			<button onClick={checkData}>Check</button>
-			{open && (
-				<div>
-					<pre>{JSON.stringify(check, null, 2)}</pre>
-				</div>
-			)}
-		</>
+		<Suspense fallback={<Loader />}>
+			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+				<RouterProvider router={router} />
+			</ThemeProvider>
+		</Suspense>
 	);
 }
-
-export default App;
