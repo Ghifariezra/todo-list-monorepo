@@ -12,12 +12,15 @@
     ],
     "rewrites": [
         {
-            "source": "/api/(.*)",
-            "destination": "/apps/backend/src/main.ts"
-        },
-        {
             "source": "/(.*)",
             "destination": "/apps/frontend/dist/index.html"
+        }
+    ],
+    "routes": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/apps/backend/src/main.ts",
+            "methods": ["GET"]
         }
     ]
 }
