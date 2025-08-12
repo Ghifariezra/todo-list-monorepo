@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 const Loader = () => {
 	return (
-		<div className='min-h-screen flex justify-center items-center'>
-			<StyledWrapper>
+		<div className='min-h-screen flex justify-center items-center bg-background'>
+			<StyledWrapper className='bg-background'>
 				<div className="loader" />
 			</StyledWrapper>
 		</div>

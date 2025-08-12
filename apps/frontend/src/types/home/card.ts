@@ -1,0 +1,1 @@
+export type Data = Array<{ description: string; image: string }>;

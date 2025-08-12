@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 import Loader from '@/components/common/loading/loading';
 
 const Main = lazy(() => import('@/router/main'));
-const Home = lazy(() => import('@/components/layouts/home'));
+const Home = lazy(() => import('@/components/layouts/home/home'));
 const About = lazy(() => import('@/components/layouts/about'));
 
 const router = createBrowserRouter([
