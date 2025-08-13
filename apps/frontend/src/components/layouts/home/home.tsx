@@ -3,6 +3,7 @@ import Section from '@/components/shared/section';
 import Hero from '@/components/layouts/home/hero';
 import Second from '@/components/layouts/home/second';
 import Third from '@/components/layouts/home/third';
+import Fourth from '@/components/layouts/home/fourth';
 
 export default function HomeLayout() {
 	return (
@@ -11,6 +12,7 @@ export default function HomeLayout() {
 				<Hero />
 				<Second />
 				<Third />
+				<Fourth />
 			</motion.div>
 		</Section>
 	);
