@@ -37,7 +37,8 @@ export class AppController {
     return {
       status: 404,
       message: 'Not Found',
-      path: req.url
+      path: req.originalUrl
     };
   }
+
 }

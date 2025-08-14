@@ -1,3 +1,4 @@
+// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -8,18 +9,33 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.use(csurf({ cookie: true }));
-  app.use(helmet());
-  
+
+  // Tambahkan konfigurasi ini
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          'img-src': [
+            "'self'",
+            'data:',
+            'https://cdn4.iconfinder.com'
+          ],
+        },
+      },
+    }),
+  );
+
   app.useGlobalPipes(
     new XssCleanPipe(),
     new ValidationPipe({
-      whitelist: true,            // buang field tak terdaftar di DTO
-      forbidNonWhitelisted: true, // error jika ada field liar
-      transform: true,            // auto transform ke tipe DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
