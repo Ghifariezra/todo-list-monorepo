@@ -33,7 +33,7 @@ export class AppController {
   }
 
   @Get('*splat')
-  handleWildcard(@Req() req: CustomRequest) {
+  handleWildcard(@Req() req: ExpressRequest) {
     return {
       status: 404,
       message: 'Not Found',

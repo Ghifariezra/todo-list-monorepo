@@ -15,8 +15,6 @@ export class XssCleanPipe implements PipeTransform {
                 return acc;
             }, {} as Record<string, unknown>);
         }
-        
-        console.log(cleanedValue);
 
         return cleanedValue;
     }
