@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { CheckCheck } from 'lucide-react';
 import { memo } from 'react';
 
-function Text({ letter }: { letter: string }) {
+function Logo({ letter }: { letter: string }) {
 	return (
 		<motion.div className="text-animate">
 			<motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
@@ -19,4 +19,4 @@ function Text({ letter }: { letter: string }) {
 	);
 }
 
-export default memo(Text);
+export default memo(Logo);

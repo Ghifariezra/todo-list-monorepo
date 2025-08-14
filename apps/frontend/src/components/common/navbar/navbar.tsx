@@ -1,5 +1,5 @@
 import ToggleDark from '@/components/common/navbar/components/mode-dark';
-import Text from '@/components/common/text/text';
+import Logo from '@/components/common/logo/logo';
 import ToggleMenus from '@/components/common/navbar/components/mode-menu';
 import { useMenus } from '@/hooks/navbar/useMenus';
 import { Menus } from '@/components/common/navbar/components/menus';
@@ -10,9 +10,9 @@ export default function Navbar() {
 	const { open, toggleOpen } = useMenus();
 
 	return (
-		<nav className="navbar">
+		<motion.nav initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="navbar">
 			<motion.div className="wrapper-navbar">
-				<Text letter={LogoName} />
+				<Logo letter={LogoName} />
 				<ToggleDark />
 				<Menus className="hidden sm:flex flex-row items-center" />
 				<motion.div className="relative sm:hidden">
@@ -28,6 +28,6 @@ export default function Navbar() {
 					)}
 				</AnimatePresence>
 			</motion.div>
-		</nav>
+		</motion.nav>
 	);
 }

@@ -126,12 +126,12 @@
 	.navbar {
 		@apply grid grid-rows-1 border-b bg-background;
 	}
-  .wrapper-navbar{
-    @apply flex justify-between items-center p-6;
-  }
-  .wrapper-navbar-mobile{
-    @apply py-4
-  }
+	.wrapper-navbar {
+		@apply flex justify-between items-center p-6;
+	}
+	.wrapper-navbar-mobile {
+		@apply py-4;
+	}
 }
 
 @layer components {
