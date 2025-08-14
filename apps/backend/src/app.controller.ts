@@ -1,19 +1,34 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req } from '@nestjs/common';
 import { AppService } from './app.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import type { Request as ExpressRequest } from 'express';
 
-@Controller()
+interface CustomRequest extends ExpressRequest {
+  csrfToken: () => string;
+}
+
+@Controller('auth')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get()
-
   getHello(): string {
     return this.appService.getHello();
   }
 
-  @Get('check')
+  @Get('csrf-token')
+  getCsrfToken(@Req() req: CustomRequest) {
+    return { csrfToken: req.csrfToken() };
+  }
 
-  check() {
-    return this.appService.getCheck();
+  @Post('signup')
+  signup(@Body() body: CreateUserDto) {
+    return this.appService.signup(body);
+  }
+
+  @Post('login')
+  login(@Body() body: LoginDto) {
+    return this.appService.login(body);
   }
 }
