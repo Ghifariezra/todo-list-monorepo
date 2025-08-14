@@ -31,4 +31,13 @@ export class AppController {
   login(@Body() body: LoginDto) {
     return this.appService.login(body);
   }
+
+  @Get('*splat')
+  handleWildcard(@Req() req: CustomRequest) {
+    return {
+      status: 404,
+      message: 'Not Found',
+      path: req.url
+    };
+  }
 }
