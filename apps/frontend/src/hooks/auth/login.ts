@@ -11,7 +11,6 @@ import Cookies from 'js-cookie';
 const useLogin = () => {
     const navigate = useNavigate();
     const [errorSanitize, setErrorSanitize] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -32,11 +31,6 @@ const useLogin = () => {
             return;
         }
 
-        if (isLoading) {
-            return;
-        }
-
-        setIsLoading(true);
         setErrorSanitize('');
 
         try {
@@ -67,7 +61,7 @@ const useLogin = () => {
             setErrorSanitize('Terjadi kesalahan pada input. Demi keamanan, kami tidak dapat memproses data Anda.');
         }
 
-    }, [setErrorSanitize, isLoading, navigate]);
+    }, [setErrorSanitize, navigate]);
 
     useEffect(() => {
         if (errorSanitize) {

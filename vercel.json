@@ -18,7 +18,12 @@
             "src": "/(.*)",
             "dest": "/apps/backend/src/main.ts",
             "methods": [
-                "GET"
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
             ]
         }
     ]

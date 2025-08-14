@@ -7,6 +7,9 @@ import type { Request as ExpressRequest } from 'express';
 interface CustomRequest extends ExpressRequest {
   csrfToken: () => string;
 }
+interface ExpressRequestWithPath extends ExpressRequest {
+  path: string;
+}
 
 @Controller('auth')
 export class AppController {
@@ -33,11 +36,11 @@ export class AppController {
   }
 
   @Get('*splat')
-  handleWildcard(@Req() req: ExpressRequest) {
+  handleWildcard(@Req() req: ExpressRequestWithPath) {
     return {
       status: 404,
       message: 'Not Found',
-      path: req.originalUrl
+      path: req.path
     };
   }
 
