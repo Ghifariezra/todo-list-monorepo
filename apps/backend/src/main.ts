@@ -23,13 +23,11 @@ async function bootstrap() {
           'img-src': [
             "'self'",
             'data:',
-            'https://cdn4.iconfinder.com',
             'https://cdn0.iconfinder.com',
+            'https://cdn1.iconfinder.com',
             'https://cdn2.iconfinder.com',
-          ],
-          "style-src": [
-            "'self'",
-            "'unsafe-inline'"
+            'https://cdn3.iconfinder.com',
+            'https://cdn4.iconfinder.com',
           ],
         },
       },
