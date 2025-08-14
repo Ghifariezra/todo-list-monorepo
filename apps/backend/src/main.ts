@@ -27,6 +27,10 @@ async function bootstrap() {
             'https://cdn0.iconfinder.com',
             'https://cdn2.iconfinder.com',
           ],
+          "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+          ],
         },
       },
     }),
