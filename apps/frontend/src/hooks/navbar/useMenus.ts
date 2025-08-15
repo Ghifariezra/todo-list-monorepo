@@ -6,12 +6,13 @@ export const useMenus = ({ user }: { user: User | null }) => {
     const [open, setOpen] = useState(false);
 
     const menus = useMemo(() => {
-        if (user) {
-            return MenusData.filter(menu => menu.name !== 'Login' && menu.name !== 'Sign Up');
-        } else {
-            return MenusData.filter(menu => menu.name !== 'Logout');
-        }
+        const excludeNames = user
+            ? ['Home', 'About', 'Login', 'Sign Up']
+            : ['Logout', 'Dashboard', 'Tasks', 'Projects'];
+
+        return MenusData.filter(menu => !excludeNames.includes(menu.name));
     }, [user]);
+
 
     const toggleOpen = useCallback(() => {
         setOpen((prev) => !prev);
