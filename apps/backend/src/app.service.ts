@@ -3,6 +3,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { compare, hash } from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AppService {
@@ -10,6 +11,7 @@ export class AppService {
   constructor(
     @Inject('SUPABASE_ADMIN_CLIENT')
     private readonly supabaseClient: SupabaseClient,
+    private readonly jwtService: JwtService
   ) { }
 
   getHello(): string {
@@ -76,8 +78,12 @@ export class AppService {
       throw new UnauthorizedException('Kombinasi email dan kata sandi salah.');
     }
 
+    const payload = { sub: user.id, email: user.email };
+    const token = this.jwtService.sign(payload);
+
     return {
       message: 'Login berhasil.',
+      access_token: token,
       user: {
         id: user.id,
         name: user.name,

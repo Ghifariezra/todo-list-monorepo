@@ -13,7 +13,7 @@ export function Menus({ className }: { className?: string }) {
 							return (
 								<NavLink key={index} to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : 'w-full')}>
 									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
-										<Button variant="outline" className="cursor-pointer w-1/3 sm:w-full font-bold">
+										<Button variant="outline" className="cursor-pointer w-fit sm:w-full font-bold">
 											{menu.name}
 										</Button>
 									</motion.div>
@@ -23,7 +23,7 @@ export function Menus({ className }: { className?: string }) {
 							return (
 								<NavLink key={index} to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : 'w-full')}>
 									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
-										<Button className="cursor-pointer w-1/3 sm:w-full font-bold duration-500 ease-in">{menu.name}</Button>
+										<Button className="cursor-pointer w-fit sm:w-full font-bold duration-500 ease-in">{menu.name}</Button>
 									</motion.div>
 								</NavLink>
 							);

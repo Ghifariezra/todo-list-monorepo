@@ -11,7 +11,7 @@ function AboutLayout() {
 					<motion.div className='bg-[url("https://cdn0.iconfinder.com/data/icons/team-work-office-3d-asset/512/Team_work_Discuss_About_work.png")] w-full h-full bg-contain bg-no-repeat bg-center' />
 				</motion.div>
 				<motion.div className="flex flex-col gap-4">
-					<Paragraph className="sm:!text-justify">
+					<Paragraph className="sm:!text-justify !font-semibold">
 						Achievly adalah proyek portofolio yang saya kembangkan untuk memecahkan masalah pribadi yang sering kita hadapi: bagaimana mengelola daftar tugas yang menumpuk dan rencana yang berantakan. Terinspirasi dari kebutuhan
 						akan sebuah alat yang sederhana namun kuat, saya membangun Achievly sebagai bukti nyata bahwa produktivitas dapat diakses oleh semua orang. Proyek ini tidak hanya tentang membuat sebuah aplikasi, tetapi juga tentang
 						<br />
