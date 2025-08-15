@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loading/loading';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
@@ -8,6 +8,7 @@ const Home = lazy(() => import('@/components/layouts/home/home'));
 const About = lazy(() => import('@/components/layouts/about'));
 const Login = lazy(() => import('@/components/layouts/auth/login'));
 const Signup = lazy(() => import('@/components/layouts/auth/signup'));
+
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
 		],
 	},
 ]);
+
 export default function App() {
 	return (
 		<Suspense fallback={<Loader />}>

@@ -78,7 +78,11 @@ export class AppService {
       throw new UnauthorizedException('Kombinasi email dan kata sandi salah.');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { 
+      sub: user.id, 
+      name: user.name, 
+      email: user.email 
+    };
     const token = this.jwtService.sign(payload);
 
     return {

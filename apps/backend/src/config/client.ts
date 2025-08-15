@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 export const supabaseProvider = {
     provide: 'SUPABASE_ADMIN_CLIENT',
     useFactory: (configService: ConfigService) => {
-        const supabaseUrl = configService.get<string>('VITE_SUPABASE_URL');
-        const supabaseServiceRoleKey = configService.get<string>('VITE_SUPABASE_SERVICE_ROLE_KEY');
+        const supabaseUrl = configService.get<string>('SUPABASE_URL');
+        const supabaseServiceRoleKey = configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
 
         if (!supabaseUrl || !supabaseServiceRoleKey) {
             throw new Error('Supabase URL or Anon Key is not defined in environment variables.');

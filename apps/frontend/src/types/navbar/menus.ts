@@ -1,0 +1,1 @@
+export interface Menus { name: string; href: string }

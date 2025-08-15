@@ -1,4 +1,6 @@
-export const MenusData: Array<{ name: string; href: string }> = [{
+import type { Menus } from '@/types/navbar/menus';
+
+export const MenusData: Array<Menus> = [{
     name: 'Home',
     href: '/'
 }, {
@@ -10,4 +12,8 @@ export const MenusData: Array<{ name: string; href: string }> = [{
 }, {
     name: 'Sign Up',
     href: '/signup'
-}];
+}, {
+    name: 'Logout',
+    href: '/logout'
+}
+];

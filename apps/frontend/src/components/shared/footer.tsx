@@ -5,7 +5,7 @@ import Logo from '@/components/common/logo/logo';
 export default function Footer() {
 	return (
 		<motion.footer id="contact" className="text-gray-700 dark:text-gray-300 p-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-			<div className="max-w-6xl mx-auto grid sm:grid-cols-2 gap-6 items-center">
+			<div className="w-full mx-auto grid sm:grid-cols-2 gap-6 items-center">
 				{/* Kiri - Logo / Brand */}
 				<div className="flex flex-col gap-2">
 					<Logo letter="Achievly" />

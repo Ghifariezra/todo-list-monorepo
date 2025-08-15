@@ -2,17 +2,14 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signupSchema } from '@/lib/validations/signup';
-import { useNavigate } from 'react-router-dom';
 import { useCallback, useState, useEffect } from 'react';
-import axios from 'axios';
+import { useSignupAuth } from '@/services/useSignUpAuth';
 import xss from 'xss';
-import Cookies from 'js-cookie';
-
 
 const useSignup = () => {
-    const navigate = useNavigate();
     const [errorSanitize, setErrorSanitize] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { signupUser } = useSignupAuth();
 
     const form = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
@@ -45,32 +42,11 @@ const useSignup = () => {
         setErrorSanitize('');
 
         try {
-            // 1️⃣ Ambil CSRF token dari server
-            const csrfRes = await axios.get('/api/auth/csrf-token', { withCredentials: true });
-            const token = csrfRes.data.csrfToken || Cookies.get('_csrf');
-
-            if (!token) {
-                setErrorSanitize('Gagal mendapatkan CSRF token, silakan coba lagi.');
-                return;
-            }
-
-            // 2️⃣ Set header token untuk request POST
-            await axios.post(
-                '/api/auth/signup',
-                sanitize,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': token
-                    },
-                    withCredentials: true
-                }
-            );
-            navigate('/login', { replace: true });
+            await signupUser({ setErrorSanitize, sanitize });
         } catch (error: unknown) {
             console.error(error);
         }
-    }, [setErrorSanitize, isLoading, navigate]);
+    }, [setErrorSanitize, isLoading, signupUser]);
 
     useEffect(() => {
         if (errorSanitize) {

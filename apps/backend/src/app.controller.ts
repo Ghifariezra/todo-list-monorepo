@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Req, Res, UseGuards } from '@nestjs/common
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import type { Request as ExpressRequest, Response as ExpressResponse, CookieOptions } from 'express';
+import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 
 interface CustomRequest extends ExpressRequest {
@@ -20,32 +20,6 @@ interface ReqProfile extends ExpressRequest {
   };
 }
 
-interface ResLogin extends ExpressResponse {
-  cookie: (
-    name: string,
-    value: string,
-    options?: CookieOptions
-  ) => this;
-}
-
-interface ResLogout extends ExpressResponse {
-  clearCookie: (
-    name: string,
-    options?: CookieOptions
-  ) => this;
-}
-
-interface ResResult extends ExpressResponse {
-  json: (
-    message: string,
-    user?: {
-      id: string;
-      name: string;
-      email: string;
-    }
-  ) => this;
-}
-
 @Controller('auth')
 export class AppController {
   constructor(private readonly appService: AppService) { }
@@ -56,7 +30,7 @@ export class AppController {
   }
 
   @Post('login')
-  async login(@Body() body: LoginDto, @Res() res: ResLogin): Promise<ResResult> {
+  async login(@Body() body: LoginDto, @Res() res: ExpressResponse) {
     const { access_token, user } = await this.appService.login(body);
 
     res.cookie('token', access_token, {
@@ -70,8 +44,12 @@ export class AppController {
   }
 
   @Post('logout')
-  logout(@Res() res: ResLogout): ResResult {
-    res.clearCookie('token');
+  logout(@Res() res: ExpressResponse) {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
     return res.json({ message: 'Logout berhasil' });
   }
 
