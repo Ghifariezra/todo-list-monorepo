@@ -86,8 +86,6 @@ export class AppController {
   // Gunakan guard untuk mendapatkan user ID dari token akses
   @UseGuards(AuthGuard('jwt'))
   async logout(@Req() req: ReqProfile, @Res() res: ExpressResponse) {
-    console.log('User ID:', req.user.userId);
-
     // Hapus refresh token dari database
     await this.appService.logout(req.user.userId);
 
