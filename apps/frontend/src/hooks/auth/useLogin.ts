@@ -5,8 +5,10 @@ import { loginSchema } from '@/lib/validations/login';
 import { useCallback, useState, useEffect } from 'react';
 import { useLoginAuth } from '@/services/useLoginAuth';
 import xss from 'xss';
+import { useNavigate } from 'react-router-dom';
 
 const useLogin = () => {
+    const navigate = useNavigate();
     const [errorSanitize, setErrorSanitize] = useState('');
     const { loginUser } = useLoginAuth();
 
@@ -32,17 +34,22 @@ const useLogin = () => {
         setErrorSanitize('');
 
         try {
-            await loginUser({ setErrorSanitize, sanitize });
+            const response = await loginUser({ setErrorSanitize, sanitize });
+
+            if (response) {
+                navigate('/', { replace: true });
+                navigate(0);
+            }
         } catch (error: unknown) {
             console.error(error);
-            setErrorSanitize('Terjadi kesalahan pada input. Demi keamanan, kami tidak dapat memproses data Anda.');
         }
-    }, [setErrorSanitize, loginUser]);
+    }, [setErrorSanitize, loginUser, navigate]);
 
     useEffect(() => {
         if (errorSanitize) {
             setTimeout(() => setErrorSanitize(''), 3000);
         }
+        // Handle Internal Server Error
     }, [errorSanitize]);
 
     return { form, onSubmit, errorSanitize };

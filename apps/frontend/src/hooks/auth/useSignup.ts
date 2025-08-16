@@ -3,12 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signupSchema } from '@/lib/validations/signup';
 import { useCallback, useState, useEffect } from 'react';
-import { useSignupAuth } from '@/services/useSignUpAuth';
+import { useSignupAuth } from '@/services/useSignupAuth';
+import { useNavigate } from 'react-router-dom';
 import xss from 'xss';
 
 const useSignup = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [errorSanitize, setErrorSanitize] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const { signupUser } = useSignupAuth();
 
     const form = useForm<z.infer<typeof signupSchema>>({
@@ -24,7 +26,7 @@ const useSignup = () => {
     const onSubmit = useCallback(async (values: z.infer<typeof signupSchema>) => {
         const sanitize = {
             name: xss(values.name.trim()),
-            email: xss(values.email.trim()),
+            email: xss(values.email.toLowerCase().trim()),
             password: xss(values.password.trim()),
             confirmPassword: xss(values.confirmPassword.trim()),
         }
@@ -34,19 +36,21 @@ const useSignup = () => {
             return;
         }
 
-        if (isLoading) {
-            return;
-        }
-
-        setIsLoading(true);
+        setLoading(true);
         setErrorSanitize('');
 
         try {
-            await signupUser({ setErrorSanitize, sanitize });
+            const response = await signupUser({ setErrorSanitize, sanitize });
+            setLoading(false);
+
+            if (response) {
+                navigate('/login', { replace: true });
+                navigate(0);
+            }
         } catch (error: unknown) {
             console.error(error);
         }
-    }, [setErrorSanitize, isLoading, signupUser]);
+    }, [setErrorSanitize, navigate, signupUser, setLoading]);
 
     useEffect(() => {
         if (errorSanitize) {
@@ -54,7 +58,7 @@ const useSignup = () => {
         }
     }, [errorSanitize]);
 
-    return { form, onSubmit, errorSanitize };
+    return { form, onSubmit, errorSanitize, loading };
 };
 
 export { useSignup };

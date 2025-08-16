@@ -1,31 +1,35 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useCallback } from "react";
 import { useCsrf } from '@/services/useCsrf';
-import { useNavigate } from 'react-router-dom';
 
 const useSignupAuth = () => {
-    const navigate = useNavigate();
     const { fetchCsrf } = useCsrf();
 
     const signupUser = useCallback(async ({ setErrorSanitize, sanitize }: { setErrorSanitize?: (error: string) => void; sanitize: { email: string; password: string; }; }) => {
 
-        const token = await fetchCsrf({ setErrorSanitize });
+        try {
+            const token = await fetchCsrf({ setErrorSanitize });
 
-        await axios.post(
-            '/api/auth/signup',
-            sanitize,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': token
-                },
-                withCredentials: true
+            await axios.post(
+                '/api/auth/signup',
+                sanitize,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': token
+                    },
+                    withCredentials: true
+                }
+            );
+            
+            return true;
+        } catch (error: unknown) {
+            if (isAxiosError(error)) {
+                console.log(error);
+                setErrorSanitize?.(error?.response?.data.message);
             }
-        );
-
-        navigate('/login', { replace: true });
-        navigate(0);
-    }, [fetchCsrf, navigate]);
+        }
+    }, [fetchCsrf]);
 
     return { signupUser };
 }
