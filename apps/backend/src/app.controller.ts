@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
+import { minutes, Throttle } from '@nestjs/throttler';
 
 interface CustomRequest extends ExpressRequest {
   csrfToken: () => string;
@@ -28,37 +29,19 @@ export class AppController {
     private readonly jwtService: JwtService
   ) { }
 
+  @Throttle({ default: { 
+    limit: 5, 
+    ttl: minutes(1),
+   } })
   @Post('signup')
   signup(@Body() body: CreateUserDto) {
     return this.appService.signup(body);
   } 
 
-  @Post('refresh')
-  async refresh(@Req() req: ExpressRequest, @Res() res: ExpressResponse) {
-    const refreshToken = req.cookies['refresh_token'];
-
-    if (!refreshToken) { 
-      throw new UnauthorizedException('Tidak ada refresh token.');
-    }
- 
-    try {
-      const payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
-      });
-
-      return this.appService.refresh(payload.sub, refreshToken);
-
-    } catch {
-      // Token kadaluarsa / invalid → hapus cookie
-      res.clearCookie('refresh_token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-      });
-      throw new UnauthorizedException('Refresh token tidak valid atau sudah kadaluarsa.');
-    }
-  }
-
+  @Throttle({ default: { 
+    limit: 5, 
+    ttl: minutes(1),
+   } })
   @Post('login')
   async login(@Body() body: LoginDto, @Res() res: ExpressResponse) {
     const { access_token, refresh_token, user } = await this.appService.login(body);
@@ -82,6 +65,32 @@ export class AppController {
     return res.json({ message: 'Login berhasil', user });
   }
 
+  @Post('refresh')
+  async refresh(@Req() req: ExpressRequest, @Res() res: ExpressResponse) {
+    const refreshToken = req.cookies['refresh_token'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Tidak ada refresh token.');
+    }
+
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+
+      return this.appService.refresh(payload.sub, refreshToken);
+
+    } catch {
+      // Token kadaluarsa / invalid → hapus cookie
+      res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+      throw new UnauthorizedException('Refresh token tidak valid atau sudah kadaluarsa.');
+    }
+  }
+
   @Post('logout')
   // Gunakan guard untuk mendapatkan user ID dari token akses
   @UseGuards(AuthGuard('jwt'))
@@ -100,6 +109,7 @@ export class AppController {
       secure: true,
       sameSite: 'strict',
     });
+
     return res.json({ message: 'Logout berhasil' });
   }
 
@@ -110,13 +120,20 @@ export class AppController {
   }
 
   @Get()
+
   getHello(): string {
     return this.appService.getHello();
   }
 
   @Get('csrf-token')
   getCsrfToken(@Req() req: CustomRequest) {
-    return { csrfToken: req.csrfToken() };
+    const csrfToken = req.csrfToken();
+    
+    if (!csrfToken) {
+      throw new UnauthorizedException('CSRF token tidak ditemukan.');
+    }
+
+    return { csrfToken: csrfToken };
   }
 
   @Get('*splat')

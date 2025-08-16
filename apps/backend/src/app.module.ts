@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import { supabaseProvider } from './config/client';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { ThrottlerModule, ThrottlerGuard, minutes } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -27,8 +29,29 @@ import { JwtStrategy } from './auth/jwt.strategy';
       secret: process.env.JWT_REFRESH_SECRET,
       signOptions: { expiresIn: '7d' }
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [{
+        ttl: minutes(1), 
+        limit: 10,
+        ignoreUserAgents: [
+          /googlebot/i,
+          /bingbot/i,
+          /slurp/i
+        ]
+      }],
+      errorMessage: "Ups, kamu terlalu semangat! Tunggu sebentar, ya. Nanti kita lanjut lagi. 🏃💨",
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, XssCleanPipe, supabaseProvider, JwtStrategy],
+  providers: [
+    AppService,
+    XssCleanPipe,
+    supabaseProvider,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule { }

@@ -6,10 +6,13 @@ import { XssCleanPipe } from './pipes/xss-clean.pipe';
 import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.set('trust proxy', true);
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.use(csurf({ cookie: true }));
