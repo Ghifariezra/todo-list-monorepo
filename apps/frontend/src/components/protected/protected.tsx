@@ -5,7 +5,7 @@ export default function Protected({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
 
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/auth/login" replace />;
     }
 
     return <>{children}</>;
