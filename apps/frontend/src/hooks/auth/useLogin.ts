@@ -37,7 +37,7 @@ const useLogin = () => {
             const response = await loginUser({ setErrorSanitize, sanitize });
 
             if (response) {
-                navigate('/', { replace: true });
+                navigate('/dashboard', { replace: true });
                 navigate(0);
             }
         } catch (error: unknown) {

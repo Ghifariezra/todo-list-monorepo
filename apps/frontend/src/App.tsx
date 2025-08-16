@@ -2,12 +2,16 @@ import Loader from '@/components/common/loading/loading';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import Protected from '@/components/protected/protected';
 
 const Main = lazy(() => import('@/router/main'));
 const Home = lazy(() => import('@/components/layouts/home/home'));
 const About = lazy(() => import('@/components/layouts/about'));
 const Login = lazy(() => import('@/components/layouts/auth/login'));
 const Signup = lazy(() => import('@/components/layouts/auth/signup'));
+const Dashboard = lazy(() => import('@/components/layouts/auth/dashboard'));
+
+const NotFound = lazy(() => import('@/components/common/not-found/not-found'));
 
 const router = createBrowserRouter([
 	{
@@ -16,8 +20,33 @@ const router = createBrowserRouter([
 		children: [
 			{ path: '/', Component: Home },
 			{ path: '/about', Component: About },
-			{ path: '/login', Component: Login },
-			{ path: '/signup', Component: Signup },
+			{ path: '/auth/login', Component: Login },
+			{ path: '/auth/signup', Component: Signup },
+			{
+				path: '/dashboard',
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+			{
+				path: '/tasks',
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+			{
+				path: '/projects',
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+			{ path: '*', Component: NotFound },
 		],
 	},
 ]);

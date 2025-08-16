@@ -4,7 +4,7 @@ import { useHome } from '@/hooks/home/useHome';
 import { memo } from 'react';
 
 function Hero() {
-	const { start } = useHome();
+	const { login } = useHome();
 
 	return (
 		<motion.div className="min-h-screen grid sm:grid-cols-2 items-center justify-center gap-8 sm:gap-4 px-6 py-4 duration-1000 ease-in">
@@ -19,7 +19,7 @@ function Hero() {
 					</motion.p>
 				</motion.div>
 				<motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease: 'easeInOut' }} className="flex gap-4">
-					<Button onClick={start} className="cursor-pointer text-base font-bold duration-500 ease-in">
+					<Button onClick={login} className="cursor-pointer text-base font-bold duration-500 ease-in">
 						Mulai Sekarang, Gratis!
 					</Button>
 				</motion.div>
