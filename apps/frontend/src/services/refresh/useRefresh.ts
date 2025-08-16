@@ -6,7 +6,7 @@ const useRefresh = () => {
     const { fetchCsrf } = useCsrf();
 
     const refreshUser = useCallback(
-        async ({ setErrorSanitize }: { setErrorSanitize?: (error: string) => void }) => {
+        async ({ setErrorSanitize }: { setErrorSanitize?: (error: string) => void }): Promise<boolean> => {
             try {
                 const token = await fetchCsrf({ setErrorSanitize });
 
