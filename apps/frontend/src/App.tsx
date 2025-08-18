@@ -20,51 +20,45 @@ const router = createBrowserRouter([
 		children: [
 			{ index: true, Component: Home },
 			{ path: 'about', Component: About },
-		],
-	},
-	{
-		path: '/auth',
-		Component: Main,
-		children: [
-			{ index: true, Component: NotFound },
-			{ path: 'login', Component: Login },
-			{ path: 'signup', Component: Signup },
-		],
-	},
-	{
-		path: '/dashboard',
-		Component: Main,
-		children: [
 			{
-				index: true,
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
+				path: 'dashboard',
+				children: [
+					{
+						index: true,
+						element: (
+							<Protected>
+								<Dashboard />
+							</Protected>
+						),
+					},
+					{
+						path: 'tasks',
+						element: (
+							<Protected>
+								<Dashboard />
+							</Protected>
+						),
+					},
+					{
+						path: 'projects',
+						element: (
+							<Protected>
+								<Dashboard />
+							</Protected>
+						),
+					},
+				],
 			},
 			{
-				path: 'tasks',
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
-			},
-			{
-				path: 'projects',
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
+				path: 'auth',
+				children: [
+					{ path: 'login', Component: Login },
+					{ path: 'signup', Component: Signup },
+				],
 			},
 		],
 	},
-	{
-		path: '*',
-		Component: NotFound,
-	},
+	{ path: '*', Component: NotFound },
 ]);
 
 export default function App() {

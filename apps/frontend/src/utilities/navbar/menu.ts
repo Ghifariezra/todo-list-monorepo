@@ -11,6 +11,5 @@ export const MenusData: Array<Menus> = [
     
     // Auth
     { name: 'Login', href: '/auth/login' },
-    { name: 'Sign Up', href: '/auth/signup' },
-    { name: 'Logout', href: '/logout' }
+    { name: 'Sign Up', href: '/auth/signup' }
 ];

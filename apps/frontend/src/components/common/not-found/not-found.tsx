@@ -1,9 +1,22 @@
 import Section from '@/components/shared/section';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { useCallback } from 'react';
+import Loader from '../loading/loading';
 
 export default function NotFound() {
+	const { user, loading } = useAuth();
 	const navigate = useNavigate();
+
+	const nav = user ? '/dashboard' : '/';
+
+	const handleNavigation = useCallback(() => {
+		navigate(nav);
+	}, [navigate, nav]);
+
+	if (loading) return <Loader />;
+	
 	return (
 		<Section id="not-found">
 			<div className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 duration-500 ease-in transition-all">
@@ -11,10 +24,10 @@ export default function NotFound() {
 				<motion.div className="aspect-video w-full max-w-lg" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: 'easeOut' }}>
 					<motion.div
 						className="bg-[url('https://cdn3.iconfinder.com/data/icons/game-81/512/404_Not_Found_Dinamic.png')] w-full h-full bg-contain bg-no-repeat bg-center"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, ease: 'easeOut' }}
-                        whileTap={{ scale: 0.95 }}
+						initial={{ opacity: 0, scale: 0.8 }}
+						animate={{ opacity: 1, scale: 1 }}
+						transition={{ duration: 0.6, ease: 'easeOut' }}
+						whileTap={{ scale: 0.95 }}
 						whileHover={{ scale: 1.05 }}
 					/>
 				</motion.div>
@@ -27,7 +40,11 @@ export default function NotFound() {
 
 				{/* Buttons */}
 				<motion.div className="flex flex-col sm:flex-row gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
-					<motion.button onClick={() => navigate('/')} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium duration-500 ease-in cursor-pointer" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+					<motion.button
+						onClick={handleNavigation}
+						className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium duration-500 ease-in cursor-pointer"
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}>
 						🏠 Balik ke Rumah
 					</motion.button>
 

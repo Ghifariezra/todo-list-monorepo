@@ -2,41 +2,19 @@ import { NavLink } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import type { Menus } from '@/types/navbar/menus';
-import { useNavigate } from 'react-router-dom';
+import { AvatarComponent } from '@/components/common/navbar/components/avatar';
+import type { AuthContextType } from '@/types/auth/auth';
 
-export function Menus({ className, MenusData, logout }: { className?: string; MenusData: Array<Menus>; logout?: () => void }) {
-	const navigate = useNavigate();
-
+export function Menus({ className, MenusData, user, logout }: { className?: string; MenusData: Array<Menus>; user?: AuthContextType['user']; logout?: AuthContextType['logout'] }) {
 	return (
 		<>
 			<motion.div className={`${className} gap-4 font-medium`}>
 				{MenusData.map((menu, index) => {
 					switch (menu.name) {
-						case 'Logout':
-							return (
-								<motion.div key={index} 
-									initial={{ opacity: 0, y: -10 }} 
-									animate={{ opacity: 1, y: 0 }} 
-									transition={{ delay: index * 0.1 }} 
-									className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
-									<Button
-										variant="destructive"
-										className="cursor-pointer w-fit sm:w-full font-bold"
-										onClick={() => {
-											logout?.();
-											navigate('/');
-										}}>
-										{menu.name}
-									</Button>
-								</motion.div>
-							);
 						case 'Login':
 							return (
 								<NavLink key={index} to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : 'w-full')}>
-									<motion.div 
-										initial={{ opacity: 0, y: -10 }} 
-										animate={{ opacity: 1, y: 0 }} 
-										transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
+									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
 										<Button variant="outline" className="cursor-pointer w-fit sm:w-full font-bold">
 											{menu.name}
 										</Button>
@@ -46,10 +24,7 @@ export function Menus({ className, MenusData, logout }: { className?: string; Me
 						case 'Sign Up':
 							return (
 								<NavLink key={index} to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : 'w-full')}>
-									<motion.div 
-										initial={{ opacity: 0, y: -10 }} 
-										animate={{ opacity: 1, y: 0 }} 
-										transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
+									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-center">
 										<Button className="cursor-pointer w-fit sm:w-full font-bold duration-500 ease-in">{menu.name}</Button>
 									</motion.div>
 								</NavLink>
@@ -80,6 +55,7 @@ export function Menus({ className, MenusData, logout }: { className?: string; Me
 							);
 					}
 				})}
+				<AvatarComponent user={user ?? null} logout={logout} />
 			</motion.div>
 		</>
 	);

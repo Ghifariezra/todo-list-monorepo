@@ -8,11 +8,10 @@ export const useMenus = ({ user }: { user: User | null }) => {
     const menus = useMemo(() => {
         const excludeNames = user
             ? ['Home', 'About', 'Login', 'Sign Up']
-            : ['Logout', 'Dashboard', 'Tasks', 'Projects'];
+            : ['Dashboard', 'Tasks', 'Projects', 'Profile', 'Logout'];
 
         return MenusData.filter(menu => !excludeNames.includes(menu.name));
     }, [user]);
-
 
     const toggleOpen = useCallback(() => {
         setOpen((prev) => !prev);
