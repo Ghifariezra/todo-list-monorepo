@@ -105,7 +105,14 @@ export class AppService {
     }
 
     // 3. Buat access + refresh token
-    const payload = { sub: user.id, name: user.name, email: user.email };
+    const payload = { 
+      sub: user.id, 
+      name: user.name, 
+      email: user.email,
+      title: user.title,
+      bio: user.bio,
+      profile_picture_url: user.profile_picture_url
+     };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '30s' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
