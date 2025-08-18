@@ -4,11 +4,11 @@ import Logo from '@/components/common/logo/logo';
 
 export default function Footer() {
 	return (
-		<motion.footer id="contact" className="text-gray-700 dark:text-gray-300 p-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+		<motion.footer id="contact" className="text-gray-700 bg-slate-50 dark:bg-slate-900 p-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
 			<div className="w-full mx-auto grid sm:grid-cols-2 gap-6 items-center">
 				{/* Kiri - Logo / Brand */}
 				<div className="flex flex-col gap-2">
-					<Logo letter="Achievly" />
+					<Logo letter="Achievly" footer={true} />
 					<p className="text-sm">© {new Date().getFullYear()} All rights reserved.</p>
 				</div>
 

@@ -13,7 +13,7 @@ export default function Navbar() {
 	const { open, toggleOpen, menus } = useMenus({ user });
 
 	return (
-		<motion.nav initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="navbar shadow-md sticky top-0 bg-white dark:bg-gray-900 z-50">
+		<motion.nav initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="navbar shadow-md sticky top-0 bg-slate-50 dark:bg-slate-900 z-50">
 			<motion.div className="wrapper-navbar">
 				{/* Logo */}
 				<Logo letter={LogoName} />

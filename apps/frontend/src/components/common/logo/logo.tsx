@@ -3,10 +3,10 @@ import { CheckCheck } from 'lucide-react';
 import { memo } from 'react';
 import { useLogo } from '@/hooks/navbar/useLogo';
 
-function Logo({ letter }: { letter: string }) {
+function Logo({ letter, footer }: { letter: string, footer?: boolean }) {
 	const { handleLogoClick } = useLogo();
 	return (
-		<motion.div className="text-animate cursor-pointer" onClick={handleLogoClick}>
+		<motion.div className={`text-animate ${footer ? '' : 'cursor-pointer'}`} onClick={footer ? undefined : handleLogoClick}>
 			<motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
 				<CheckCheck className="text-icon" />
 			</motion.div>
