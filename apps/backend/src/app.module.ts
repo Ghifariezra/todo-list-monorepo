@@ -32,7 +32,7 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot({
       throttlers: [{
         ttl: minutes(1), 
-        limit: 10,
+        limit: 100,
         ignoreUserAgents: [
           /googlebot/i,
           /bingbot/i,

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function NotFound() {
 	const navigate = useNavigate();
-
 	return (
 		<Section id="not-found">
 			<div className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 duration-500 ease-in transition-all">

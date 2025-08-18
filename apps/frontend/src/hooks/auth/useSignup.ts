@@ -44,8 +44,7 @@ const useSignup = () => {
             setLoading(false);
 
             if (response) {
-                navigate('/login', { replace: true });
-                navigate(0);
+                navigate('/auth/login', { replace: true });
             }
         } catch (error: unknown) {
             console.error(error);

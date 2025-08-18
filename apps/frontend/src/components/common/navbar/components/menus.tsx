@@ -56,7 +56,7 @@ export function Menus({ className, MenusData, logout }: { className?: string; Me
 							);
 						case 'Dashboard':
 							return (
-								<NavLink key={index} to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : '')}>
+								<NavLink key={index} end to={menu.href} className={({ isActive }) => (isActive ? 'bg-gray-200 dark:bg-gray-800 rounded-md duration-500 ease-in' : '')}>
 									<motion.div
 										initial={{ opacity: 0, y: -10 }}
 										animate={{ opacity: 1, y: 0 }}

@@ -18,36 +18,52 @@ const router = createBrowserRouter([
 		path: '/',
 		Component: Main,
 		children: [
-			{ path: '/', Component: Home },
-			{ path: '/about', Component: About },
-			{ path: '/auth/login', Component: Login },
-			{ path: '/auth/signup', Component: Signup },
-			{
-				path: '/dashboard',
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
-			},
-			{
-				path: '/tasks',
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
-			},
-			{
-				path: '/projects',
-				element: (
-					<Protected>
-						<Dashboard />
-					</Protected>
-				),
-			},
-			{ path: '*', Component: NotFound },
+			{ index: true, Component: Home },
+			{ path: 'about', Component: About },
 		],
+	},
+	{
+		path: '/auth',
+		Component: Main,
+		children: [
+			{ index: true, Component: NotFound },
+			{ path: 'login', Component: Login },
+			{ path: 'signup', Component: Signup },
+		],
+	},
+	{
+		path: '/dashboard',
+		Component: Main,
+		children: [
+			{
+				index: true,
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+			{
+				path: 'tasks',
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+			{
+				path: 'projects',
+				element: (
+					<Protected>
+						<Dashboard />
+					</Protected>
+				),
+			},
+		],
+	},
+	{
+		path: '*',
+		Component: NotFound,
 	},
 ]);
 

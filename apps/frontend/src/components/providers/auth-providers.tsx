@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const { refreshUser } = useRefresh();
 	const { interceptor } = useInterceptor({ refreshUser, setUser });
 
-
 	// Fungsi ambil profile dari server
 	const loadProfile = useCallback(async () => {
 		await fetchProfile({ setUser, setLoading });

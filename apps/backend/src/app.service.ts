@@ -128,36 +128,38 @@ export class AppService {
     };
   }
 
-  async refresh(userId: string, refreshToken: string) {
-    // 1. Ambil user dari DB
-    const { data: user } = await this.supabaseClient
-      .from('users')
-      .select('id, refresh_token_hash, name, email')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (!user || !user.refresh_token_hash) {
-      throw new UnauthorizedException('Refresh token tidak valid.');
-    }
-
-    // 2. Cocokin refresh token yang dikirim client dengan hash di DB
-    const isMatch = await compare(refreshToken, user.refresh_token_hash);
-    if (!isMatch) {
-      throw new UnauthorizedException('Refresh token tidak cocok.');
-    }
-
-    // 3. Verifikasi refresh token (expiry dll.)
+  async refresh(refreshToken: string) {
     try {
-      const payload = this.jwtService.verify(refreshToken);
+      // 1. Verifikasi refresh token menggunakan secret
+      const payload = this.jwtService.verify(refreshToken, { secret: process.env.JWT_REFRESH_SECRET });
+
+      // 2. Ambil user dari DB
+      const { data: user } = await this.supabaseClient
+        .from('users')
+        .select('id, refresh_token_hash, name, email')
+        .eq('id', payload.sub)
+        .maybeSingle();
+
+      if (!user || !user.refresh_token_hash) {
+        throw new UnauthorizedException('Refresh token tidak valid.');
+      }
+
+      // 3. Cocokin refresh token yang dikirim client dengan hash di DB
+      const isMatch = await compare(refreshToken, user.refresh_token_hash);
+      if (!isMatch) {
+        throw new UnauthorizedException('Refresh token tidak cocok.');
+      }
+
+      // 4. Buat access token baru
       const newAccessToken = this.jwtService.sign(
-        { sub: payload.sub, name: user.name, email: user.email },
-        { expiresIn: '15m' }
+        { sub: user.id, name: user.name, email: user.email },
+        { expiresIn: '15m', secret: process.env.JWT_ACCESS_SECRET } // Gunakan secret yang benar
       );
 
       return { access_token: newAccessToken };
+
     } catch {
-      throw new UnauthorizedException('Refresh token expired.');
+      throw new UnauthorizedException('Refresh token expired or invalid.');
     }
   }
-
 }

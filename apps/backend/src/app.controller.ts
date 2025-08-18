@@ -10,9 +10,6 @@ import { minutes, Throttle } from '@nestjs/throttler';
 interface CustomRequest extends ExpressRequest {
   csrfToken: () => string;
 }
-interface ExpressRequestWithPath extends ExpressRequest {
-  path: string;
-}
 
 interface ReqProfile extends ExpressRequest {
   user: {
@@ -29,37 +26,40 @@ export class AppController {
     private readonly jwtService: JwtService
   ) { }
 
-  @Throttle({ default: { 
-    limit: 5, 
-    ttl: minutes(1),
-   } })
+  @Throttle({
+    default: {
+      limit: 5,
+      ttl: minutes(1),
+    }
+  })
   @Post('signup')
   signup(@Body() body: CreateUserDto) {
     return this.appService.signup(body);
-  } 
+  }
 
-  @Throttle({ default: { 
-    limit: 5, 
-    ttl: minutes(1),
-   } })
+  @Throttle({
+    default: {
+      limit: 5,
+      ttl: minutes(1),
+    }
+  })
   @Post('login')
   async login(@Body() body: LoginDto, @Res() res: ExpressResponse) {
     const { access_token, refresh_token, user } = await this.appService.login(body);
 
-    // Access token → bisa di cookie HttpOnly atau langsung di client memory 
+    // src/app.controller.ts
     res.cookie('token', access_token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 30 * 1000, // 15 menit
+      maxAge: 15 * 60 * 1000,
     });
 
-    // Refresh token → wajib di HttpOnly cookie
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 hari
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({ message: 'Login berhasil', user });
@@ -74,14 +74,18 @@ export class AppController {
     }
 
     try {
-      const payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
+      const { access_token } = await this.appService.refresh(refreshToken);
+
+      res.cookie('token', access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000,
       });
 
-      return this.appService.refresh(payload.sub, refreshToken);
+      return res.json({ message: 'Token berhasil diperbarui' });
 
     } catch {
-      // Token kadaluarsa / invalid → hapus cookie
       res.clearCookie('refresh_token', {
         httpOnly: true,
         secure: true,
@@ -120,7 +124,6 @@ export class AppController {
   }
 
   @Get()
-
   getHello(): string {
     return this.appService.getHello();
   }
@@ -128,21 +131,12 @@ export class AppController {
   @Get('csrf-token')
   getCsrfToken(@Req() req: CustomRequest) {
     const csrfToken = req.csrfToken();
-    
+
     if (!csrfToken) {
       throw new UnauthorizedException('CSRF token tidak ditemukan.');
     }
 
     return { csrfToken: csrfToken };
-  }
-
-  @Get('*splat')
-  handleWildcard(@Req() req: ExpressRequestWithPath) {
-    return {
-      status: 404,
-      message: 'Not Found',
-      path: req.path
-    };
   }
 
 }
