@@ -10,8 +10,7 @@ export default function LoginForm() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
-				<div className="flex flex-col gap-4">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 w-full">
 					{/* Field Email */}
 					<FormField
 						control={form.control}
@@ -19,8 +18,10 @@ export default function LoginForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Email</FormLabel>
-								<FormControl>
+								<FormControl className='w-full'>
+									<div className="w-full">
 									<Input placeholder="you@example.com" {...field} />
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -34,14 +35,15 @@ export default function LoginForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Password</FormLabel>
-								<FormControl>
+								<FormControl className='w-full'>
+									<div className="w-full">
 									<Input type="password" placeholder="********" {...field} />
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-				</div>
 				<AnimatePresence mode="wait" initial={false}>
 					{errorSanitize?.length > 0 && (
 						<motion.div

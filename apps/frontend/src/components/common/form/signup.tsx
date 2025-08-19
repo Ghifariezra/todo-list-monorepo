@@ -19,7 +19,7 @@ function SignupForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-bold">Nama</FormLabel>
-								<FormControl>
+								<FormControl className="w-full">
 									<Input placeholder="John Doe" {...field} />
 								</FormControl>
 								<FormMessage />
@@ -33,7 +33,7 @@ function SignupForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-bold">Email</FormLabel>
-								<FormControl>
+								<FormControl className="w-full">
 									<Input placeholder="you@example.com" {...field} />
 								</FormControl>
 								<FormMessage />
@@ -47,7 +47,7 @@ function SignupForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-bold">Password</FormLabel>
-								<FormControl>
+								<FormControl className="w-full">
 									<Input type="password" placeholder="********" {...field} />
 								</FormControl>
 								<FormMessage />
@@ -61,7 +61,7 @@ function SignupForm() {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-bold">Konfirmasi Password</FormLabel>
-								<FormControl>
+								<FormControl className="w-full">
 									<Input type="password" placeholder="********" {...field} />
 								</FormControl>
 								<FormMessage />
