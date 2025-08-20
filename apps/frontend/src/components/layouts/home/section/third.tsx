@@ -1,8 +1,8 @@
-import CardHome from '@/components/common/home/card';
+import CardHome from '@/components/common/cards/card';
 import { memo } from 'react';
 import { motion } from 'motion/react';
 import { Categories } from '@/utilities/home/category';
-import { Heading, Paragraph } from '@/components/common/home/text';
+import { Heading, Paragraph } from '@/components/common/text/text';
 
 function Third() {
 	return (

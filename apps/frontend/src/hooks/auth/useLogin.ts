@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { loginSchema } from '@/lib/validations/login';
 import { useCallback, useState, useEffect } from 'react';
-import { useLoginAuth } from '@/services/useLoginAuth';
+import { useLoginAuth } from '@/services/auth/useLoginAuth';
 import xss from 'xss';
-import { useNavigate } from 'react-router-dom';
+import { useDirect } from '@/hooks/direction/useDirect';
 
 const useLogin = () => {
-    const navigate = useNavigate();
+    const { dashboard } = useDirect();
     const [errorSanitize, setErrorSanitize] = useState('');
     const { loginUser } = useLoginAuth();
 
@@ -37,13 +37,12 @@ const useLogin = () => {
             const response = await loginUser({ setErrorSanitize, sanitize });
 
             if (response) {
-                navigate('/dashboard', { replace: true });
-                navigate(0);
+                dashboard();
             }
         } catch (error: unknown) {
             console.error(error);
         }
-    }, [setErrorSanitize, loginUser, navigate]);
+    }, [setErrorSanitize, loginUser, dashboard]);
 
     useEffect(() => {
         if (errorSanitize) {

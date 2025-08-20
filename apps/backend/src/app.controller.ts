@@ -1,29 +1,17 @@
-import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
+import type { Response, Request } from 'express';
+import type { ReqToken, ReqProfile } from './types/request';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtService } from '@nestjs/jwt';
 import { minutes, Throttle } from '@nestjs/throttler';
-
-interface CustomRequest extends ExpressRequest {
-  csrfToken: () => string;
-}
-
-interface ReqProfile extends ExpressRequest {
-  user: {
-    userId: string;
-    name: string;
-    email: string;
-  };
-}
+import { UpdateProfileDto } from './dto/update-user.dto';
 
 @Controller('auth')
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly jwtService: JwtService
   ) { }
 
   @Throttle({
@@ -44,15 +32,14 @@ export class AppController {
     }
   })
   @Post('login')
-  async login(@Body() body: LoginDto, @Res() res: ExpressResponse) {
+  async login(@Body() body: LoginDto, @Res() res: Response) {
     const { access_token, refresh_token, user } = await this.appService.login(body);
 
-    // src/app.controller.ts
     res.cookie('token', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 15 * 60 * 1000,
+      maxAge: 30 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refresh_token, {
@@ -66,7 +53,7 @@ export class AppController {
   }
 
   @Post('refresh')
-  async refresh(@Req() req: ExpressRequest, @Res() res: ExpressResponse) {
+  async refresh(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies['refresh_token'];
 
     if (!refreshToken) {
@@ -80,7 +67,7 @@ export class AppController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 15 * 60 * 1000,
+        maxAge: 30 * 60 * 1000,
       });
 
       return res.json({ message: 'Token berhasil diperbarui' });
@@ -98,10 +85,9 @@ export class AppController {
   @Post('logout')
   // Gunakan guard untuk mendapatkan user ID dari token akses
   @UseGuards(AuthGuard('jwt'))
-  async logout(@Req() req: ReqProfile, @Res() res: ExpressResponse) {
-    // Hapus refresh token dari database
-    await this.appService.logout(req.user.userId);
-
+  async logout(@Req() req: ReqProfile, @Res() res: Response) {
+    await this.appService.logout(req);
+    
     // Hapus token akses dan refresh token dari cookie
     res.clearCookie('token', {
       httpOnly: true,
@@ -117,26 +103,31 @@ export class AppController {
     return res.json({ message: 'Logout berhasil' });
   }
 
-  @Get('profile')
-  @UseGuards(AuthGuard('jwt'))
-  profile(@Req() req: ReqProfile) {
-    return req.user;
-  }
-
   @Get()
   getHello(): string {
     return this.appService.getHello();
   }
 
   @Get('csrf-token')
-  getCsrfToken(@Req() req: CustomRequest) {
-    const csrfToken = req.csrfToken();
-
-    if (!csrfToken) {
-      throw new UnauthorizedException('CSRF token tidak ditemukan.');
-    }
-
-    return { csrfToken: csrfToken };
+  getCsrfToken(@Req() req: ReqToken) {
+    return this.appService.getCsrfToken(req);
+  }
+  
+  @Get('profile')
+  @UseGuards(AuthGuard('jwt'))
+  profile(@Req() req: ReqProfile) {
+    return this.appService.getProfile(req);
   }
 
+  @Get('user')
+  @UseGuards(AuthGuard('jwt'))
+  user(@Req() req: ReqProfile) {
+    return this.appService.getUser(req);
+  }
+
+  @Patch('user/update')
+  @UseGuards(AuthGuard('jwt'))
+  updateUser(@Req() req: ReqProfile, @Body() body: UpdateProfileDto) {
+    return this.appService.updateProfile(req, body);
+  }
 }

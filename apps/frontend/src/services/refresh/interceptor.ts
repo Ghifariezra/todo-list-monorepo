@@ -1,8 +1,8 @@
-import type { User } from '@/types/auth/auth';
+import type { Profile } from '@/types/auth/auth';
 import axios, { AxiosError } from 'axios';
 import { useCallback } from 'react';
 
-const useInterceptor = ({ refreshUser, setUser }: { refreshUser: ({ setErrorSanitize }: { setErrorSanitize?: (error: string) => void; }) => Promise<boolean>; setUser: (user: User | null) => void; }) => {
+const useInterceptor = ({ refreshUser, setUser }: { refreshUser: ({ setErrorSanitize }: { setErrorSanitize?: (error: string) => void; }) => Promise<boolean>; setUser: (user: Profile | null) => void; }) => {
 
     // 👇 INI BAGIAN KUNCI PENGGUNAAN useRefresh 👇
     const interceptor = useCallback(() => {

@@ -1,19 +1,12 @@
 import Section from '@/components/shared/section';
 import { useAuth } from '@/hooks/auth/useAuth';
 import { motion } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
 import Loader from '../loading/loading';
+import { useDirect } from '@/hooks/direction/useDirect';
 
 export default function NotFound() {
 	const { user, loading } = useAuth();
-	const navigate = useNavigate();
-
-	const nav = user ? '/dashboard' : '/';
-
-	const handleNavigation = useCallback(() => {
-		navigate(nav);
-	}, [navigate, nav]);
+	const { checkRoot, back } = useDirect();
 
 	if (loading) return <Loader />;
 	
@@ -41,7 +34,7 @@ export default function NotFound() {
 				{/* Buttons */}
 				<motion.div className="flex flex-col sm:flex-row gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
 					<motion.button
-						onClick={handleNavigation}
+						onClick={() => checkRoot(user)}
 						className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium duration-500 ease-in cursor-pointer"
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}>
@@ -49,7 +42,7 @@ export default function NotFound() {
 					</motion.button>
 
 					<motion.button
-						onClick={() => navigate(-1)}
+						onClick={back}
 						className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium duration-500 ease-in cursor-pointer"
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}>

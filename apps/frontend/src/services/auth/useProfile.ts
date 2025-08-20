@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User } from '@/types/auth/auth';
+import type { Profile } from '@/types/auth/auth';
 import { useCallback } from 'react';
 
 export const useProfile = () => {
@@ -8,12 +8,12 @@ export const useProfile = () => {
       setUser,
       setLoading,
     }: {
-      setUser: (user: User | null) => void;
+      setUser: (user: Profile | null) => void;
       setLoading: (loading: boolean) => void;
     }) => {
       try {
         setLoading(true);
-        const { data } = await axios.get<User>('/api/auth/profile', {
+        const { data } = await axios.get<Profile>('/api/auth/profile', {
           withCredentials: true,
         });
         setUser(data);

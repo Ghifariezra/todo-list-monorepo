@@ -1,14 +1,14 @@
 // AuthProvider.tsx
 import { useState, useEffect, useCallback } from 'react';
-import { useProfile } from '@/services/useProfile';
-import { useLogoutAuth } from '@/services/useLogoutAuth';
+import { useProfile } from '@/services/auth/useProfile';
+import { useLogoutAuth } from '@/services/auth/useLogoutAuth';
 import { useRefresh } from '@/services/refresh/useRefresh';
 import { useInterceptor } from '@/services/refresh/interceptor';
-import type { User } from '@/types/auth/auth';
+import type { Profile } from '@/types/auth/auth';
 import { AuthContext } from '@/hooks/auth/useAuth';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<Profile | null>(null);
 	const [loading, setLoading] = useState(true);
 	const { fetchProfile } = useProfile();
 	const { logoutUser } = useLogoutAuth();

@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useCallback } from "react";
-import type { User } from '@/types/auth/auth';
-import { useCsrf } from '@/services/useCsrf';
+import type { Profile } from '@/types/auth/auth';
+import { useCsrf } from '@/services/auth/useCsrf';
 
 const useLogoutAuth = () => {
     const { fetchCsrf } = useCsrf();
 
-    const logoutUser = useCallback(async ({ setUser }: { setUser: (user: User | null) => void; }) => {
+    const logoutUser = useCallback(async ({ setUser }: { setUser: (user: Profile | null) => void; }) => {
 
         const token = await fetchCsrf({ setErrorSanitize: undefined });
 

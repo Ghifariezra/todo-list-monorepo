@@ -1,12 +1,12 @@
 import { motion } from 'motion/react';
 import { CheckCheck } from 'lucide-react';
 import { memo } from 'react';
-import { useLogo } from '@/hooks/navbar/useLogo';
+import { useDirect } from '@/hooks/direction/useDirect';
 
 function Logo({ letter, footer }: { letter: string, footer?: boolean }) {
-	const { handleLogoClick } = useLogo();
+	const { home } = useDirect();
 	return (
-		<motion.div className={`text-animate ${footer ? '' : 'cursor-pointer'}`} onClick={footer ? undefined : handleLogoClick}>
+		<motion.div className={`text-animate ${footer ? '' : 'cursor-pointer'}`} onClick={footer ? undefined : home}>
 			<motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
 				<CheckCheck className="text-icon" />
 			</motion.div>

@@ -1,7 +1,7 @@
 import Section from '@/components/shared/section';
 import { memo } from 'react';
 import { motion } from 'motion/react';
-import { Paragraph } from '@/components/common/home/text';
+import { Paragraph } from '@/components/common/text/text';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Thumb } from '@radix-ui/react-scroll-area';
 

@@ -2,9 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useProfile } from '@/hooks/navbar/useProfile';
 import { AnimatePresence, motion } from 'motion/react';
 import type { AuthContextType } from '@/types/auth/auth';
+import { useDirect } from '@/hooks/direction/useDirect';
 
 export function AvatarComponent({ user, logout }: { user: AuthContextType['user']; logout?: AuthContextType['logout'] }) {
 	const { openProfile, toggleProfile, profileRef } = useProfile();
+	const { profile } = useDirect();
 
 	if (!user) {
 		return null;
@@ -32,8 +34,9 @@ export function AvatarComponent({ user, logout }: { user: AuthContextType['user'
 						transition={{ duration: 0.3, ease: 'easeInOut' }}
 						className="absolute top-17 right-0 sm:right-6 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-50">
 						<ul className="py-2">
-							<li className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Settings</li>
-							<li className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Profile</li>
+							<li className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" onClick={profile}>
+									Profile
+							</li>
 							<li className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" onClick={logout}>
 								Logout
 							</li>

@@ -1,13 +1,22 @@
-import { useSignup } from '@/hooks/auth/useSignup';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShieldAlert } from 'lucide-react';
 import DatePickerFormField from '@/components/common/date-picker/data-picker';
+import { useProfile } from '@/hooks/auth/useProfile';
+import { Textarea } from '@/components/ui/textarea';
 
-function SignupForm() {	
-	const { form, onSubmit, errorSanitize, loading } = useSignup();
+function ProfileForm() {
+	const { form, onSubmit, errorSanitize, loading, isLoading, name, email, phone, country, date_of_birth, title, bio } = useProfile();
+
+	if (isLoading) {
+		return (
+			<div className="flex items-center justify-center">
+				<div className="w-8 h-8 border-b-2 border-gray-900 rounded-full animate-spin"></div>
+			</div>
+		);
+	}
 
 	return (
 		<Form {...form}>
@@ -20,7 +29,21 @@ function SignupForm() {
 						<FormItem>
 							<FormLabel className="font-bold">Nama</FormLabel>
 							<FormControl className="w-full">
-								<Input placeholder="John Doe" {...field} />
+								<Input placeholder={name} {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				{/* Email */}
+				<FormField
+					control={form.control}
+					name="email"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel className="font-bold">Email</FormLabel>
+							<FormControl className="w-full">
+								<Input placeholder={email} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -35,14 +58,14 @@ function SignupForm() {
 							<FormItem className="w-full">
 								<FormLabel className="font-bold">Nomor Telepon</FormLabel>
 								<FormControl className="w-full">
-									<Input placeholder="08123456789" {...field} />
+									<Input placeholder={phone} {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
 					{/* Date of Birth */}
-					<DatePickerFormField control={form.control} />
+					<DatePickerFormField control={form.control} date_of_birth={date_of_birth} />
 				</div>
 				{/* Country */}
 				<FormField
@@ -52,49 +75,35 @@ function SignupForm() {
 						<FormItem>
 							<FormLabel className="font-bold">Negara</FormLabel>
 							<FormControl className="w-full">
-								<Input placeholder="Indonesia" {...field} />
+								<Input placeholder={country} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				{/* Email */}
+				{/* Title */}
 				<FormField
 					control={form.control}
-					name="email"
+					name="title"
 					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="font-bold">Email</FormLabel>
+						<FormItem className="w-full">
+							<FormLabel className="font-bold">Judul</FormLabel>
 							<FormControl className="w-full">
-								<Input placeholder="you@example.com" {...field} />
+								<Input placeholder={title} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				{/* Password */}
+				{/* Bio */}
 				<FormField
 					control={form.control}
-					name="password"
+					name="bio"
 					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="font-bold">Password</FormLabel>
+						<FormItem className="w-full">
+							<FormLabel className="font-bold">Bio</FormLabel>
 							<FormControl className="w-full">
-								<Input type="password" placeholder="********" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				{/* Confirm Password */}
-				<FormField
-					control={form.control}
-					name="confirmPassword"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="font-bold">Konfirmasi Password</FormLabel>
-							<FormControl className="w-full">
-								<Input type="password" placeholder="********" {...field} />
+								<Textarea placeholder={bio} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -115,12 +124,12 @@ function SignupForm() {
 						</motion.div>
 					)}
 				</AnimatePresence>
-				<Button disabled={errorSanitize?.length > 0 || loading} type="submit" className="w-full cursor-pointer font-bold">
-					{loading ? 'Sabar yaaa...' : 'Daftar'}
+				<Button disabled={errorSanitize?.length > 0 || loading || !form.formState.isValid} type="submit" className="w-full cursor-pointer font-bold">
+					{loading ? 'Menyimpan...' : 'Simpan Perubahan'}
 				</Button>
 			</form>
 		</Form>
 	);
 }
 
-export { SignupForm };
+export { ProfileForm };

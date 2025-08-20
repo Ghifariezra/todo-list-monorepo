@@ -9,7 +9,8 @@ const Home = lazy(() => import('@/components/layouts/home/home'));
 const About = lazy(() => import('@/components/layouts/about'));
 const Login = lazy(() => import('@/components/layouts/auth/login'));
 const Signup = lazy(() => import('@/components/layouts/auth/signup'));
-const Dashboard = lazy(() => import('@/components/layouts/auth/dashboard'));
+const Dashboard = lazy(() => import('@/components/layouts/auth/dashboard/dashboard'));
+const Profile = lazy(() => import('@/components/layouts/auth/dashboard/profile'));
 
 const NotFound = lazy(() => import('@/components/common/not-found/not-found'));
 
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
 							</Protected>
 						),
 					},
+					{
+						path: 'profile',
+						element: (
+							<Protected>
+								<Profile />
+							</Protected>
+						),
+					},
 				],
 			},
 			{
@@ -56,9 +65,9 @@ const router = createBrowserRouter([
 					{ path: 'signup', Component: Signup },
 				],
 			},
+			{ path: '*', Component: NotFound },
 		],
 	},
-	{ path: '*', Component: NotFound },
 ]);
 
 export default function App() {

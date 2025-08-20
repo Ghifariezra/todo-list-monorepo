@@ -5,6 +5,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import validate from 'deep-email-validator'
+import type { ReqToken, ReqProfile } from './types/request';
+import type { User } from './types/users';
+import { UpdateProfileDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AppService {
@@ -19,13 +22,25 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async checkEmailValidity(email: string) {
+  private async checkEmailValidity(email: string) {
     const validationResult = await validate({
       email,
       validateSMTP: false,
     });
 
     return validationResult;
+  }
+
+  private formatDateToString(date?: string | Date) {
+    if (!date) return undefined;
+    const d = typeof date === 'string' ? new Date(date) : date;
+
+    // Ambil tanggal lokal, bukan UTC
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 
   async signup(createUserDto: CreateUserDto) {
@@ -65,6 +80,9 @@ export class AppService {
     // 4️⃣ Simpan ke database (hanya simpan password, jangan simpan confirmPassword)
     const { data, error } = await this.supabaseClient.from('users').insert({
       name: createUserDto.name,
+      phone: createUserDto.phone,
+      country: createUserDto.country,
+      date_of_birth: this.formatDateToString(createUserDto.dateOfBirth),
       email: createUserDto.email,
       password_hash: hashedPassword,
     }).select();
@@ -81,11 +99,11 @@ export class AppService {
     };
   }
 
-  async logout(userId: string) {
+  async logout(req: ReqProfile) {
     await this.supabaseClient
       .from('users')
       .update({ refresh_token_hash: null })
-      .eq('id', userId);
+      .eq('id', req.user.userId);
   }
 
   // --- Metode Login yang mengelola otentikasi secara manual ---
@@ -105,16 +123,17 @@ export class AppService {
     }
 
     // 3. Buat access + refresh token
-    const payload = { 
-      sub: user.id, 
-      name: user.name, 
+    const payload = {
+      sub: user.id,
+      name: user.name,
       email: user.email,
       title: user.title,
       bio: user.bio,
       profile_picture_url: user.profile_picture_url
-     };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '30s' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    };
+
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '30m', secret: process.env.JWT_ACCESS_SECRET });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d', secret: process.env.JWT_REFRESH_SECRET });
 
     // 4. Hash refresh token dan simpan di DB
     const hashedRefreshToken = await hash(refreshToken, this.saltRounds);
@@ -160,13 +179,68 @@ export class AppService {
       // 4. Buat access token baru
       const newAccessToken = this.jwtService.sign(
         { sub: user.id, name: user.name, email: user.email },
-        { expiresIn: '15m', secret: process.env.JWT_ACCESS_SECRET } // Gunakan secret yang benar
+        { expiresIn: '30m', secret: process.env.JWT_ACCESS_SECRET } // Gunakan secret yang benar
       );
 
       return { access_token: newAccessToken };
 
     } catch {
       throw new UnauthorizedException('Refresh token expired or invalid.');
+    }
+  }
+
+  getCsrfToken(req: ReqToken) {
+    const csrfToken = req.csrfToken();
+
+    if (!csrfToken) {
+      throw new UnauthorizedException('CSRF token tidak ditemukan.');
+    }
+
+    return { csrfToken: csrfToken };
+  }
+
+  getProfile(req: ReqProfile) {
+    return req.user;
+  }
+
+  async getUser(req: ReqProfile) {
+    if (!req.user?.userId) {
+      throw new UnauthorizedException('User tidak terautentikasi.');
+    }
+
+    const { data, error } = await this.supabaseClient
+      .from('users')
+      .select('id, name, email, phone, country, date_of_birth, profile_picture_url, title, bio')
+      .eq('id', req.user.userId)
+      .single();
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal mendapatkan data pengguna.');
+    }
+
+    return {
+      status: 200,
+      message: 'Data pengguna berhasil didapatkan.',
+      user: data as User,
+    };
+  }
+
+  async updateProfile(req: ReqProfile, body: UpdateProfileDto) {
+    const { error } = await this.supabaseClient
+      .from('users')
+      .update(body)
+      .eq('id', req.user.userId)
+      .single();
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal memperbarui data pengguna.');
+    }
+
+    return {
+      status: 200,
+      message: 'Data pengguna berhasil diperbarui.',
     }
   }
 }

@@ -17,7 +17,7 @@ export default function LoginForm() {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className='font-bold'>Email</FormLabel>
 								<FormControl className='w-full'>
 									<div className="w-full">
 									<Input placeholder="you@example.com" {...field} />
@@ -34,7 +34,7 @@ export default function LoginForm() {
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Password</FormLabel>
+								<FormLabel className='font-bold'>Password</FormLabel>
 								<FormControl className='w-full'>
 									<div className="w-full">
 									<Input type="password" placeholder="********" {...field} />

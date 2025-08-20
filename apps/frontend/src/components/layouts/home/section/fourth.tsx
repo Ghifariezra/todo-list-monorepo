@@ -1,11 +1,11 @@
 import { motion } from 'motion/react';
 import { memo } from 'react';
-import { Heading, Paragraph } from '@/components/common/home/text';
+import { Heading, Paragraph } from '@/components/common/text/text';
 import { Button } from '@/components/ui/button';
-import { useHome } from '@/hooks/home/useHome';
+import { useDirect } from '@/hooks/direction/useDirect';
 
 function Fourth() {
-    const { signup } = useHome();
+    const { signup } = useDirect();
 	return (
 		<motion.div className="flex flex-col gap-6 bg-gray-50 dark:bg-slate-950 px-6 py-12">
 			<motion.div className="flex flex-col items-center gap-4">

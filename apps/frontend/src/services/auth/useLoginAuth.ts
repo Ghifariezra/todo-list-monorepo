@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 import { useCallback } from "react";
-import { useCsrf } from '@/services/useCsrf';
+import { useCsrf } from '@/services/auth/useCsrf';
 
 const useLoginAuth = () => {
     const { fetchCsrf } = useCsrf();

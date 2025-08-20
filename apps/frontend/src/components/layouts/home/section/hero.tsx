@@ -1,10 +1,10 @@
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
-import { useHome } from '@/hooks/home/useHome';
+import { useDirect } from '@/hooks/direction/useDirect';
 import { memo } from 'react';
 
 function Hero() {
-	const { login } = useHome();
+	const { login } = useDirect();
 
 	return (
 		<motion.div className="min-h-screen grid sm:grid-cols-2 items-center justify-center gap-8 sm:gap-4 px-6 py-4 duration-1000 ease-in">
