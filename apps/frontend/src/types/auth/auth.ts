@@ -1,3 +1,11 @@
+import type { Control, FieldValues, Path } from 'react-hook-form';
+
+export type DatePickerFormProps<T extends FieldValues> = {
+    control: Control<T>;
+    name: Path<T>;
+    date_of_birth: string | null;
+};
+
 export interface User {
     userId: string;
     name: string;

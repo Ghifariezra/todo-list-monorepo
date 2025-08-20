@@ -65,7 +65,7 @@ function ProfileForm() {
 						)}
 					/>
 					{/* Date of Birth */}
-					<DatePickerFormField control={form.control} date_of_birth={date_of_birth} />
+					<DatePickerFormField control={form.control} name="date_of_birth" date_of_birth={date_of_birth as string} />
 				</div>
 				{/* Country */}
 				<FormField

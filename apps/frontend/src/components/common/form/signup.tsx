@@ -42,7 +42,7 @@ function SignupForm() {
 						)}
 					/>
 					{/* Date of Birth */}
-					<DatePickerFormField control={form.control} />
+					<DatePickerFormField control={form.control} name="dateOfBirth" date_of_birth={null} />
 				</div>
 				{/* Country */}
 				<FormField

@@ -3,17 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import type { signupSchema } from '@/lib/validations/signup';
-import type { profileSchema } from '@/lib/validations/profile';
 import { formatterDate, parseDateString } from '@/utilities/date/formatter-date';
-import type { Control } from 'react-hook-form';
-import type z from 'zod';
+import type { DatePickerFormProps } from '@/types/auth/auth';
+import type { FieldValues} from 'react-hook-form';
 
-export default function DatePickerFormField({ control, date_of_birth }: { control: Control<z.infer<typeof signupSchema> | z.infer<typeof profileSchema>>; date_of_birth?: string | undefined }) {
+
+export default function DatePickerFormField<T extends FieldValues>({ control, name, date_of_birth }: DatePickerFormProps<T>) {
 	return (
 		<FormField
 			control={control}
-			name="dateOfBirth"
+			name={name}
 			render={({ field }) => {
 				const dateValue = parseDateString(field.value);
 
