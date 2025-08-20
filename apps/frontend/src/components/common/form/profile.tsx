@@ -6,9 +6,10 @@ import { ShieldAlert } from 'lucide-react';
 import DatePickerFormField from '@/components/common/date-picker/data-picker';
 import { useProfile } from '@/hooks/auth/useProfile';
 import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function ProfileForm() {
-	const { form, onSubmit, errorSanitize, loading, isLoading, name, email, phone, country, date_of_birth, title, bio } = useProfile();
+	const { form, onSubmit, errorSanitize, loading, isLoading, name, email, phone, country, date_of_birth, title, bio, profile_picture_url } = useProfile();
 
 	if (isLoading) {
 		return (
@@ -21,6 +22,14 @@ function ProfileForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 w-full">
+				{/* Picture */}
+				<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center place-self-center">
+					<Avatar className="font-bold size-40">
+						<AvatarImage alt="Profile" />
+						<AvatarFallback>A</AvatarFallback>
+						<AvatarImage src={profile_picture_url} />
+					</Avatar>
+				</motion.div>
 				{/* Name */}
 				<FormField
 					control={form.control}
@@ -103,7 +112,7 @@ function ProfileForm() {
 						<FormItem className="w-full">
 							<FormLabel className="font-bold">Bio</FormLabel>
 							<FormControl className="w-full">
-								<Textarea placeholder={bio} {...field} />
+								<Textarea className="h-32" placeholder={bio} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
