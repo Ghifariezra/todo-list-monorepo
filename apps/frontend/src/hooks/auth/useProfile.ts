@@ -5,12 +5,10 @@ import { profileSchema } from "@/lib/validations/profile";
 import { useCallback, useEffect, useState } from "react";
 import xss from "xss";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { useDirect } from "@/hooks/direction/useDirect";
 import { useUpdateUserMutation, useUpdateUserImageMutation } from "@/hooks/mutation/useProfileMutation";
 
 const useProfile = () => {
     const { user, loading, setUser } = useAuth();
-    const { checkRoot } = useDirect();
     const [errorSanitize, setErrorSanitize] = useState("");
 
     // React Hook Form
@@ -76,13 +74,11 @@ const useProfile = () => {
                         });
                     }
                 }
-
-                checkRoot(user);
             } catch {
                 setErrorSanitize("Gagal update profil. Silakan coba lagi.");
             }
         },
-        [updateUser, updateUserImage, checkRoot, user, setUser]
+        [updateUser, updateUserImage, setUser]
     );
 
     // Auto clear errorSanitize setelah 3 detik

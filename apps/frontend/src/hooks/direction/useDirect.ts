@@ -35,6 +35,10 @@ export const useDirect = () => {
         navigate(-1);
     }, [navigate]);
 
+    const refresh = useCallback(() => {
+        navigate(0);
+    }, [navigate]);
+
     return { 
         home,
         signup,
@@ -42,6 +46,7 @@ export const useDirect = () => {
         dashboard,
         profile,
         checkRoot,
-        back
+        back,
+        refresh
      };
 }
