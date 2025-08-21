@@ -1,7 +1,14 @@
-import { useUserTasksQuery } from '@/hooks/query/tasks/useUserTasks';
+import { useUserTasksQuery } from '@/hooks/query/tasks/useUserTasksQuery';
+import type { Task } from '@/types/task/task';
+import { useState, useEffect } from 'react';
 
 export const useTasks = () => {
+    const [tasks, setTasks] = useState<Task[]>([]);
     const { data, isLoading } = useUserTasksQuery();
 
-    return { data, isLoading };
+    useEffect(() => {
+        if (data) setTasks(data.tasks);
+    }, [data]);
+
+    return { tasks, isLoading };
 }
