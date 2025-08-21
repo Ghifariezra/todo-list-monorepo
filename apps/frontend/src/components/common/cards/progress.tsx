@@ -1,6 +1,6 @@
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
-export function Progress({ name, image }: { name?: string; image?: string }) {
+export function Progress({ name, image, children }: { name?: string; image?: string, children?: React.ReactNode }) {
 	return (
 		<Card className="w-full px-4 py-8 duration-500 ease-in">
 			<CardHeader>
@@ -12,9 +12,7 @@ export function Progress({ name, image }: { name?: string; image?: string }) {
 					) : null}
 					<CardTitle>{name}</CardTitle>
 				</div>
-				<CardDescription className="font-bold text-4xl text-slate-900 dark:text-slate-50 w-full text-center">100%</CardDescription>
-
-				<CardDescription className="text-sm text-gray-500 dark:text-gray-400 w-full text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis, dolores..</CardDescription>
+				{children}
 			</CardHeader>
 		</Card>
 	);

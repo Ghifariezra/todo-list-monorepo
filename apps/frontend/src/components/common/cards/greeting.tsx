@@ -12,16 +12,16 @@ function GreetingComponent() {
 	}
 
 	return (
-		<motion.div className="order-2 xl:order-1 xl:col-span-3 flex flex-col justify-start gap-4">
+		<motion.div className="flex flex-col justify-start gap-4">
 			<Card className="w-full duration-500 ease-in">
-				<motion.div className="flex items-center gap-2 w-full px-4">
-					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: 'easeInOut' }} className="flex items-center w-full gap-4">
+				<motion.div className="flex flex-col sm:flex-row items-center gap-2 w-full px-4">
+					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: 'easeInOut' }} className="flex flex-col sm:flex-row items-center w-full gap-4">
 						<Avatar className="!size-20 font-bold">
 							<AvatarImage alt="Profile" />
 							<AvatarFallback>{name?.charAt(0)}</AvatarFallback>
 							<AvatarImage src={profile_picture_url} />
 						</Avatar>
-						<CardHeader className="w-full">
+						<CardHeader className="w-full text-center sm:text-left">
 							<CardTitle>Hi, I'm {name}</CardTitle>
 							{title ? (
 								<CardDescription className="text-sm text-gray-500 dark:text-gray-400">{title}</CardDescription>

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import type { Menus } from '@/types/navbar/menus';
-import { AvatarComponent } from '@/components/common/navbar/components/avatar';
+import { AvatarComponent } from '@/components/common/navbar/avatar';
 import type { AuthContextType } from '@/types/auth/auth';
 
 export function Menus({ className, MenusData, user, logout }: { className?: string; MenusData: Array<Menus>; user?: AuthContextType['user']; logout?: AuthContextType['logout'] }) {

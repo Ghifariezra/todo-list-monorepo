@@ -1,11 +1,11 @@
-import ToggleDark from '@/components/common/navbar/components/mode-dark';
+import ToggleDark from '@/components/common/navbar/mode-dark';
 import Logo from '@/components/common/logo/logo';
-import ToggleMenus from '@/components/common/navbar/components/mode-menu';
+import ToggleMenus from '@/components/common/navbar/mode-menu';
 import { useMenus } from '@/hooks/navbar/useMenus';
-import { Menus } from '@/components/common/navbar/components/menus';
+import { Menus } from '@/components/common/navbar/menus';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/hooks/auth/useAuth';
-import { AvatarComponent } from '@/components/common/navbar/components/avatar';
+import { AvatarComponent } from '@/components/common/navbar/avatar';
 
 export default function Navbar() {
 	const LogoName = 'Achievly';
