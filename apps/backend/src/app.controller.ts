@@ -127,6 +127,12 @@ export class AppController {
     return this.appService.getProfile(req);
   }
 
+  @Get('user/tasks')
+  @UseGuards(AuthGuard('jwt'))
+  getTasks(@Req() req: ReqProfile) {
+    return this.appService.getTasks(req);
+  }
+
   @Patch('user/update')
   @UseGuards(AuthGuard('jwt'))
   updateUser(@Req() req: ReqProfile, @Body() body: UpdateProfileDto) {

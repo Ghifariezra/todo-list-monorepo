@@ -282,4 +282,23 @@ export class AppService {
   getProfile(req: ReqProfile) {
     return req.user;
   }
+
+  async getTasks(req: ReqProfile) {
+    const { data, error } = await this.supabaseClient
+      .from('tasks')
+      .select('*')
+      .eq('user_id', req.user.userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal mendapatkan data tugas pengguna.');
+    }
+
+    return {
+      status: 200,
+      message: 'Data tugas pengguna berhasil didapatkan.',
+      tasks: data
+    }
+  }
 }

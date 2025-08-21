@@ -65,7 +65,7 @@ export function Progress({ children, name, image, description, classNameDashboar
 					<motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: 'easeInOut' }} className="text-lg font-bold text-center">
 						Notes
 					</motion.h1>
-					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-gray-500 line-clamp-6 text-justify">
+					<motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: 'easeInOut' }} className="text-sm text-gray-500 line-clamp-6 text-justify">
 						{description}
 					</motion.div>
 				</motion.div>

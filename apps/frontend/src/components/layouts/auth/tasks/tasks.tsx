@@ -4,8 +4,12 @@ import { Heading } from '@/components/common/text/text';
 import { motion } from 'motion/react';
 import { Progress } from '@/components/common/cards/progress';
 import { Add } from '@/components/common/add/add';
+import { useTasks } from '@/hooks/tasks/useTasks';
 
 export default function TasksLayout() {
+	const { data, isLoading } = useTasks();
+	console.log(data);
+
 	return (
 		<Section id="dashboard" className="!justify-start !items-start">
 			<Dashboard>
