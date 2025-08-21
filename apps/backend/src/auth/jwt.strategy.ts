@@ -21,14 +21,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    validate(payload: { sub: string; name: string; email: string, title?: string; bio?: string; profile_picture_url?: string }) {
+    validate(payload: { sub: string; name: string; date_of_birth: string; phone: string; email: string, title?: string; bio?: string; profile_picture_url?: string, country?: string; createdAt?: string }) {
         return { 
             userId: payload.sub, 
             name: payload.name, 
+            date_of_birth: payload.date_of_birth,
+            phone: payload.phone,
             email: payload.email,
             title: payload.title,
             bio: payload.bio,
+            country: payload.country,
             profile_picture_url: payload.profile_picture_url,
+            createdAt: new Date().toISOString()
         };
     }
 }

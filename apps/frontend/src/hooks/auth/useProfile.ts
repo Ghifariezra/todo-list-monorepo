@@ -1,100 +1,94 @@
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { profileSchema } from '@/lib/validations/profile';
-import { useCallback, useEffect, useState } from 'react';
-import { QueryUserProfile } from "@/hooks/query/update/useUserProfile";
-import { useMutation } from "@tanstack/react-query";
-import { useUpdateUser } from "@/services/update/useUpdate";
-import xss from 'xss';
-import { useAuth } from '@/hooks/auth/useAuth';
-import { useDirect } from '@/hooks/direction/useDirect';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { profileSchema } from "@/lib/validations/profile";
+import { useCallback, useEffect, useState } from "react";
+import xss from "xss";
+import { useAuth } from "@/hooks/auth/useAuth";
+import { useDirect } from "@/hooks/direction/useDirect";
+import { useUpdateUserMutation, useUpdateUserImageMutation } from "@/hooks/mutation/useProfileMutation";
 
 const useProfile = () => {
-    const { user } = useAuth();
+    const { user, loading, setUser } = useAuth();
     const { checkRoot } = useDirect();
-    const { data, isLoading } = QueryUserProfile();
-    const [errorSanitize, setErrorSanitize] = useState('');
-    const { updateUser } = useUpdateUser();
+    const [errorSanitize, setErrorSanitize] = useState("");
 
+    // React Hook Form
     const form = useForm<z.infer<typeof profileSchema>>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
-            name: '',
-            email: '',
-            phone: '',
-            country: '',
+            name: "",
+            email: "",
+            phone: "",
+            country: "",
             date_of_birth: undefined,
-            title: '',
-            bio: '',
+            title: "",
+            bio: "",
+            profile_picture_url: null,
         },
     });
 
-    // Reset form ketika data user berhasil di-fetch
+    // Reset form ketika data user tersedia
     useEffect(() => {
-        if (data) {
+        if (user) {
             form.reset({
-                name: data.name || '',
-                email: data.email || '',
-                phone: data.phone || '',
-                country: data.country || '',
-                date_of_birth: data.date_of_birth ? new Date(data.date_of_birth) : undefined,
-                title: data.title || '',
-                bio: data.bio || '',
+                name: user.name || "",
+                email: user.email || "",
+                phone: user.phone || "",
+                country: user.country || "",
+                date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
+                title: user.title || "",
+                bio: user.bio || "",
+                profile_picture_url: null,
             });
         }
-    }, [data, form]);
+    }, [user, form]);
 
-    // React Query Mutation
-    const { mutateAsync, isPending } = useMutation({
-        mutationFn: updateUser,
-    });
+    // Mutation modular
+    const { mutateAsync: updateUser, isPending: isUpdating } = useUpdateUserMutation();
+    const { mutateAsync: updateUserImage } = useUpdateUserImageMutation();
 
     const onSubmit = useCallback(
         async (values: z.infer<typeof profileSchema>) => {
             const sanitize = {
-                name: xss(values.name?.trim() ?? ''),
-                email: xss(values.email?.toLowerCase().trim() ?? ''),
-                phone: xss(values.phone?.trim() ?? ''),
-                country: xss(values.country?.trim() ?? ''),
+                name: xss(values.name?.trim() ?? ""),
+                email: xss(values.email?.toLowerCase().trim() ?? ""),
+                phone: xss(values.phone?.trim() ?? ""),
+                country: xss(values.country?.trim() ?? ""),
                 date_of_birth: values.date_of_birth,
-                title: xss(values.title?.trim() ?? ''),
-                bio: xss(values.bio?.trim() ?? ''),
+                title: xss(values.title?.trim() ?? ""),
+                bio: xss(values.bio?.trim() ?? ""),
             };
 
-            // Cek kalau ada input aneh setelah disanitize
-            if (
-                values.name !== sanitize.name ||
-                values.email !== sanitize.email ||
-                values.phone !== sanitize.phone ||
-                values.country !== sanitize.country ||
-                values.title !== sanitize.title ||
-                values.bio !== sanitize.bio
-            ) {
-                setErrorSanitize(
-                    'Terjadi kesalahan pada input. Demi keamanan, kami tidak dapat memproses data Anda.'
-                );
-                return;
-            }
+            const file = values.profile_picture_url as unknown as File | null;
 
             try {
-                setErrorSanitize('');
-                const response = await mutateAsync(sanitize);
+                setErrorSanitize("");
+                const newData = (await updateUser(sanitize)).user;
+                setUser(newData);
 
-                if (response) {
-                    checkRoot(user);
+                if (file) {
+                    const imageData = await updateUserImage(file);
+                    if (newData) {
+                        setUser({
+                            ...newData,
+                            profile_picture_url: imageData.url,
+                        });
+                    }
                 }
+
+                checkRoot(user);
             } catch {
                 setErrorSanitize("Gagal update profil. Silakan coba lagi.");
             }
         },
-        [mutateAsync, checkRoot, user]
+        [updateUser, updateUserImage, checkRoot, user, setUser]
     );
 
     // Auto clear errorSanitize setelah 3 detik
     useEffect(() => {
         if (errorSanitize) {
-            const timeout = setTimeout(() => setErrorSanitize(''), 3000);
+            const timeout = setTimeout(() => setErrorSanitize(""), 3000);
             return () => clearTimeout(timeout);
         }
     }, [errorSanitize]);
@@ -103,9 +97,9 @@ const useProfile = () => {
         form,
         onSubmit,
         errorSanitize,
-        loading: isPending,
-        isLoading, // loading saat fetch profile awal
-        ...data
+        loading: isUpdating,
+        isLoading: loading,
+        ...user,
     };
 };
 

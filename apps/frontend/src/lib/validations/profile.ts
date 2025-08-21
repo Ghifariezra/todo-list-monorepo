@@ -8,6 +8,7 @@ export const profileSchema = z.object({
     date_of_birth: z.date().optional(),
     title: z.string().optional(),
     bio: z.string().optional(),
+    profile_picture_url: z.instanceof(File).optional().nullable(), // ✅ support File/null
 });
 
 export type ProfileSchema = z.infer<typeof profileSchema>;

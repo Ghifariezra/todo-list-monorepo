@@ -6,8 +6,8 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import validate from 'deep-email-validator'
 import type { ReqToken, ReqProfile } from './types/request';
-import type { User } from './types/users';
 import { UpdateProfileDto } from './dto/update-user.dto';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AppService {
@@ -128,8 +128,12 @@ export class AppService {
       name: user.name,
       email: user.email,
       title: user.title,
+      date_of_birth: user.date_of_birth,
       bio: user.bio,
-      profile_picture_url: user.profile_picture_url
+      phone: user.phone,
+      country: user.country,
+      profile_picture_url: user.profile_picture_url,
+      createdAt: user.created_at
     };
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: '30m', secret: process.env.JWT_ACCESS_SECRET });
@@ -189,43 +193,6 @@ export class AppService {
     }
   }
 
-  getCsrfToken(req: ReqToken) {
-    const csrfToken = req.csrfToken();
-
-    if (!csrfToken) {
-      throw new UnauthorizedException('CSRF token tidak ditemukan.');
-    }
-
-    return { csrfToken: csrfToken };
-  }
-
-  getProfile(req: ReqProfile) {
-    return req.user;
-  }
-
-  async getUser(req: ReqProfile) {
-    if (!req.user?.userId) {
-      throw new UnauthorizedException('User tidak terautentikasi.');
-    }
-
-    const { data, error } = await this.supabaseClient
-      .from('users')
-      .select('id, name, email, phone, country, date_of_birth, profile_picture_url, title, bio')
-      .eq('id', req.user.userId)
-      .single();
-
-    if (error) {
-      console.error(error);
-      throw new BadRequestException('Gagal mendapatkan data pengguna.');
-    }
-
-    return {
-      status: 200,
-      message: 'Data pengguna berhasil didapatkan.',
-      user: data as User,
-    };
-  }
-
   async updateProfile(req: ReqProfile, body: UpdateProfileDto) {
     const { error } = await this.supabaseClient
       .from('users')
@@ -238,9 +205,81 @@ export class AppService {
       throw new BadRequestException('Gagal memperbarui data pengguna.');
     }
 
+    const { data: updatedUser, error: error2 } = await this.supabaseClient
+      .from('users')
+      .update(body)
+      .eq('id', req.user.userId)
+      .select("name, email, phone, country, date_of_birth, title, bio, profile_picture_url, created_at")
+      .maybeSingle();
+
+    if (error2) {
+      console.error(error2);
+      throw new BadRequestException('Gagal memperbarui data pengguna.');
+    }
+
     return {
       status: 200,
       message: 'Data pengguna berhasil diperbarui.',
+      user: {
+        userId: req.user.userId,
+        ...updatedUser
+      }
     }
+  }
+
+  async uploadProfilePicture(file: Express.Multer.File, req: ReqProfile) {
+    // Check previous file and delete it
+    const fileExtOld = req.user.profile_picture_url?.split('profile/').pop();
+    if (fileExtOld) {
+      const filePathOld = `profile/${fileExtOld}`;
+      await this.supabaseClient.storage.from('Achievly').remove([filePathOld]);
+    }
+
+    if (!file) {
+      throw new BadRequestException('File tidak ditemukan.');
+    }
+
+    const fileExt = file.originalname.split('.').pop();
+    const fileName = `${req.user.userId}-${uuid()}.${fileExt}`;
+    const filePath = `profile/${fileName}`;
+
+    const { error } = await this.supabaseClient.storage
+      .from('Achievly') // ganti dengan nama bucket kamu
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+
+    if (error) {
+      throw new BadRequestException('Gagal upload ke Supabase: ' + error.message);
+    }
+
+    // ambil public URL
+    const { data } = this.supabaseClient
+      .storage
+      .from('Achievly')
+      .getPublicUrl(filePath);
+
+    // update URL ke tabel users
+    await this.supabaseClient
+      .from('users')
+      .update({ profile_picture_url: data.publicUrl })
+      .eq('id', req.user.userId);
+
+    return { url: data.publicUrl };
+  }
+
+  getCsrfToken(req: ReqToken) {
+    const csrfToken = req.csrfToken();
+
+    if (!csrfToken) {
+      throw new UnauthorizedException('CSRF token tidak ditemukan.');
+    }
+
+    return { csrfToken: csrfToken };
+  }
+
+  getProfile(req: ReqProfile) {
+    return req.user;
   }
 }

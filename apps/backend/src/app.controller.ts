@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
@@ -103,6 +104,13 @@ export class AppController {
     return res.json({ message: 'Logout berhasil' });
   }
 
+  @Post('user/upload/profile-picture')
+  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(AuthGuard('jwt'))
+  uploadProfilePicture(@UploadedFile() file: Express.Multer.File, @Req() req: ReqProfile) {
+    return this.appService.uploadProfilePicture(file, req);
+  }
+
   @Get()
   getHello(): string {
     return this.appService.getHello();
@@ -117,12 +125,6 @@ export class AppController {
   @UseGuards(AuthGuard('jwt'))
   profile(@Req() req: ReqProfile) {
     return this.appService.getProfile(req);
-  }
-
-  @Get('user')
-  @UseGuards(AuthGuard('jwt'))
-  user(@Req() req: ReqProfile) {
-    return this.appService.getUser(req);
   }
 
   @Patch('user/update')

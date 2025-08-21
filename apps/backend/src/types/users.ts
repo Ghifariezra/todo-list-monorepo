@@ -2,6 +2,7 @@ export interface userPayload {
     userId: string;
     name: string;
     email: string;
+    profile_picture_url?: string;
 };
 
 export interface User extends Omit<userPayload, 'userId'> {

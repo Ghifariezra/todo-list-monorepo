@@ -12,10 +12,7 @@ export interface User {
     email: string;
 }
 
-export interface Profile {
-    userId: string;
-    name: string;
-    email: string;
+export interface Profile extends User {
     title: string;
     bio: string;
     profile_picture_url: string;
@@ -26,6 +23,8 @@ export interface UserProfile extends Omit<Profile, 'userId'> {
     phone: string;
     country: string;
     date_of_birth: string;
+    profile_picture_url: string;
+    createdAt: string;
 };
 
 export interface ResponseUser {
@@ -35,8 +34,8 @@ export interface ResponseUser {
 }
 
 export interface AuthContextType {
-    user: Profile | null;
+    user: UserProfile | null;
     loading: boolean;
-    loadProfile: () => Promise<void>;
     logout: () => Promise<void>;
+    setUser: (user: UserProfile | null) => void;
 }

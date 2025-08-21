@@ -4,7 +4,6 @@ import {
     IsEmail,
     MinLength,
     Matches,
-    IsUrl,
     IsDateString,
 } from 'class-validator';
 
@@ -40,8 +39,4 @@ export class UpdateProfileDto {
     @IsOptional()
     @IsString()
     bio?: string;
-
-    @IsOptional()
-    @IsUrl({}, { message: 'URL foto profil tidak valid' })
-    profile_picture_url?: string;
 }

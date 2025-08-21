@@ -1,4 +1,4 @@
-import type { Profile } from "@/types/auth/auth";
+import type { UserProfile } from "@/types/auth/auth";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +26,7 @@ export const useDirect = () => {
         navigate('/dashboard/profile');
     }, [navigate]);
 
-    const checkRoot = useCallback((user: Profile | null) => {
+    const checkRoot = useCallback((user: UserProfile | null) => {
         const findRoot = user ? '/dashboard' : '/';
         navigate(findRoot);
     }, [navigate]);

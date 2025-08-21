@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShieldAlert } from 'lucide-react';
 
 export default function LoginForm() {
-	const { form, onSubmit, errorSanitize } = useLogin();
+	const { form, onSubmit, errorSanitize, isLoading } = useLogin();
 
 	return (
 		<Form {...form}>
@@ -59,8 +59,8 @@ export default function LoginForm() {
 						</motion.div>
 					)}
 				</AnimatePresence>
-				<Button disabled={errorSanitize?.length > 0} type="submit" className="w-full cursor-pointer duration-500 ease-in font-bold">
-					Login
+				<Button disabled={errorSanitize?.length > 0 || isLoading} type="submit" className="w-full cursor-pointer duration-500 ease-in font-bold">
+					{isLoading ? 'Sabarrr yaaa...' : 'Masuk'}
 				</Button>
 			</form>
 		</Form>

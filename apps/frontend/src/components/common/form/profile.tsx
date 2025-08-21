@@ -7,14 +7,35 @@ import DatePickerFormField from '@/components/common/date-picker/data-picker';
 import { useProfile } from '@/hooks/auth/useProfile';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
+import { useRef, useState, useEffect } from 'react';
 
 function ProfileForm() {
 	const { form, onSubmit, errorSanitize, loading, isLoading, name, email, phone, country, date_of_birth, title, bio, profile_picture_url } = useProfile();
 
+	const [preview, setPreview] = useState<string | null>(profile_picture_url || null);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	// Add this useEffect hook
+	useEffect(() => {
+		setPreview(profile_picture_url || null);
+	}, [profile_picture_url]);
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			const url = URL.createObjectURL(file);
+			setPreview(url);
+
+			// simpan File ke react-hook-form
+			form.setValue('profile_picture_url', file, { shouldValidate: true });
+		}
+	};
+
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center">
-				<div className="w-8 h-8 border-b-2 border-gray-900 rounded-full animate-spin"></div>
+				<div className="w-8 h-8 border-b-2 border-gray-900 rounded-full animate-spin" />
 			</div>
 		);
 	}
@@ -23,13 +44,20 @@ function ProfileForm() {
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 w-full">
 				{/* Picture */}
-				<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center place-self-center">
-					<Avatar className="font-bold size-40">
-						<AvatarImage alt="Profile" />
-						<AvatarFallback>A</AvatarFallback>
-						<AvatarImage src={profile_picture_url} />
+				<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.3, ease: 'easeOut' }} className="flex flex-col items-center gap-3 text-center duration-500 ease-in">
+					{name && <h1 className="text-2xl font-bold">{name}</h1>}
+					<Avatar className="size-40 shadow-md border">
+						{(preview || profile_picture_url) && <AvatarImage src={preview || profile_picture_url || ''} alt="Profile" />}
+						<AvatarFallback className="font-bold text-2xl">{name?.charAt(0)}</AvatarFallback>
 					</Avatar>
+					<motion.div>
+						<Label htmlFor="picture" className="cursor-pointer px-4 py-2 rounded-xl transition border font-bold">
+							Upload Picture
+						</Label>
+						<Input id="picture" name="profile_picture_url" type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+					</motion.div>
 				</motion.div>
+
 				{/* Name */}
 				<FormField
 					control={form.control}

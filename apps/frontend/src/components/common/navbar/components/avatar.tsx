@@ -18,8 +18,8 @@ export function AvatarComponent({ user, logout }: { user: AuthContextType['user'
 				<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center">
 					<Avatar className="font-bold">
 						<AvatarImage alt="Profile" />
-						<AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-						<AvatarImage src={user?.profile_picture_url} />
+						<AvatarFallback>{user?.name ? user.name.charAt(0) : ''}</AvatarFallback>
+						<AvatarImage src={user?.profile_picture_url || ''} />
 					</Avatar>
 				</motion.div>
 			</motion.div>

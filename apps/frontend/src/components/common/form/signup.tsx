@@ -7,7 +7,7 @@ import { ShieldAlert } from 'lucide-react';
 import DatePickerFormField from '@/components/common/date-picker/data-picker';
 
 function SignupForm() {	
-	const { form, onSubmit, errorSanitize, loading } = useSignup();
+	const { form, onSubmit, errorSanitize, isLoading } = useSignup();
 
 	return (
 		<Form {...form}>
@@ -115,8 +115,8 @@ function SignupForm() {
 						</motion.div>
 					)}
 				</AnimatePresence>
-				<Button disabled={errorSanitize?.length > 0 || loading} type="submit" className="w-full cursor-pointer font-bold">
-					{loading ? 'Sabar yaaa...' : 'Daftar'}
+				<Button disabled={errorSanitize?.length > 0 || isLoading} type="submit" className="w-full cursor-pointer font-bold">
+					{isLoading ? 'Sabar yaaa...' : 'Daftar'}
 				</Button>
 			</form>
 		</Form>
