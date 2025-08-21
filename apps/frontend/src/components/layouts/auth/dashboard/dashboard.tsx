@@ -10,8 +10,8 @@ export default function DashboardLayout() {
 			<Dashboard>
 				<Greeting />
 				<div className="flex sm:flex-row flex-col gap-4">
-					<Progress name="Today Tasks" image="https://cdn3.iconfinder.com/data/icons/3d-productivity/512/task_completion.png" ></Progress>
-					<Progress name="Upcoming Tasks" image="https://cdn1.iconfinder.com/data/icons/rocket-3d-rocket-business-illustration/256/Rocket_Illustration_11.png" ></Progress>
+					<Progress name="Today's Task" image="https://cdn3.iconfinder.com/data/icons/3d-productivity/512/task_completion.png"></Progress>
+					<Progress name="Upcoming Tasks" image="https://cdn0.iconfinder.com/data/icons/data-information/512/Data-Informationv1_1.png"></Progress>
 				</div>
 			</Dashboard>
 		</Section>

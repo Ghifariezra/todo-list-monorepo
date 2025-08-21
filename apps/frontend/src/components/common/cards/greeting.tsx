@@ -24,14 +24,14 @@ function GreetingComponent() {
 						<CardHeader className="w-full text-center sm:text-left">
 							<CardTitle>Hi, I'm {name}</CardTitle>
 							{title ? (
-								<CardDescription className="text-sm text-gray-500 dark:text-gray-400">{title}</CardDescription>
+								<CardDescription className="text-sm !text-gray-500 dark:!text-gray-400">{title}</CardDescription>
 							) : (
-								<CardDescription className="text-sm text-gray-500 dark:text-gray-400">Welcome to your dashboard!</CardDescription>
+								<CardDescription className="text-sm !text-gray-500 dark:!text-gray-400">Welcome to your dashboard!</CardDescription>
 							)}
 							{bio ? (
-								<CardDescription className="text-sm text-gray-500 dark:text-gray-400">{bio}</CardDescription>
+								<CardDescription className="text-sm !text-gray-500 dark:!text-gray-400">{bio}</CardDescription>
 							) : (
-								<CardDescription className="text-sm text-gray-500 dark:text-gray-400">Ups, bio kamu masih kosong nih ✨ Tulis sedikit tentang dirimu biar makin seru!</CardDescription>
+								<CardDescription className="text-sm !text-gray-500 dark:!text-gray-400">Ups, bio kamu masih kosong nih ✨ Tulis sedikit tentang dirimu biar makin seru!</CardDescription>
 							)}
 						</CardHeader>
 					</motion.div>
