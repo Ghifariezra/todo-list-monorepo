@@ -3,7 +3,7 @@ import { Dashboard } from '@/components/common/grid/dashboard';
 import { Heading } from '@/components/common/text/text';
 import { motion } from 'motion/react';
 import { Progress } from '@/components/common/cards/progress';
-import { Button } from '@/components/ui/button';
+import { Add } from '@/components/common/add/add';
 
 export default function TasksLayout() {
 	return (
@@ -21,15 +21,16 @@ export default function TasksLayout() {
 					</motion.div>
 					<Heading>Tasks</Heading>
 				</motion.div>
-				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-fit">
 					<Progress
-						name="Sepeda"
-						className='!text-xl'
-						description="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore at explicabo ex harum dolorem vero doloremque debitis, placeat, dolorum repellendus accusamus architecto totam cumque quasi fugiat officiis? Enim inventore reiciendis autem praesentium, in voluptas eius modi nostrum asperiores distinctio sed facilis debitis quidem quibusdam sit adipisci placeat totam id! Ullam itaque nam praesentium unde similique. Ad, illum consequatur sint corporis mollitia voluptas aperiam necessitatibus quidem suscipit impedit! Architecto quidem itaque illum? Non hic, quaerat beatae, accusamus porro vero placeat officiis ullam nulla similique ipsam delectus blanditiis facilis dignissimos aperiam! Repudiandae quo odio nostrum illum quaerat in a odit ex dolor.">
-							<Button>Done</Button>
-						</Progress>
+						name="Holla Como estas?"
+						description="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore at explicabo ex harum dolorem vero doloremque debitis, placeat, dolorum repellendus accusamus architecto totam cumque quasi fugiat officiis? Enim inventore reiciendis autem praesentium, in voluptas eius modi nostrum asperiores distinctio sed facilis debitis quidem quibusdam sit adipisci placeat totam id! Ullam itaque nam praesentium unde similique. Ad, illum consequatur sint corporis mollitia voluptas aperiam necessitatibus quidem suscipit impedit! Architecto quidem itaque illum? Non hic, quaerat beatae, accusamus porro vero placeat officiis ullam nulla similique ipsam delectus blanditiis facilis dignissimos aperiam! Repudiandae quo odio nostrum illum quaerat in a odit ex dolor."
+						date="2023-01-01"
+						priority="🌱 Optional"/>
+					<Progress name="Holla Como estas?" date="2023-01-01" priority="🌱 Optional"/>
 				</div>
 			</Dashboard>
+			<Add />
 		</Section>
 	);
 }
