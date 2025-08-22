@@ -7,7 +7,7 @@ export const useTasks = () => {
     const { data, isLoading } = useUserTasksQuery();
 
     useEffect(() => {
-        if (data) setTasks(data.tasks);
+        if (data) setTasks(data.tasks as Task[]);
     }, [data]);
 
     return { tasks, isLoading };

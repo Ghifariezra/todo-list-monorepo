@@ -5,7 +5,7 @@ import { profileSchema } from "@/lib/validations/profile";
 import { useCallback, useEffect, useState } from "react";
 import xss from "xss";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { useUpdateUserMutation, useUpdateUserImageMutation } from "@/hooks/mutation/useProfileMutation";
+import { useUpdateUserMutation, useUpdateUserImageMutation } from "@/hooks/mutation/auth/useProfileMutation";
 
 const useProfile = () => {
     const { user, loading, setUser } = useAuth();

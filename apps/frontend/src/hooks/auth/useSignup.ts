@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signupSchema } from '@/lib/validations/signup';
 import { useCallback, useState, useEffect } from 'react';
-import { useSignupMutation } from '@/hooks/mutation/useSignupMutation';
+import { useSignupMutation } from '@/hooks/mutation/auth/useSignupMutation';
 import { useDirect } from '@/hooks/direction/useDirect';
 import xss from 'xss';
 

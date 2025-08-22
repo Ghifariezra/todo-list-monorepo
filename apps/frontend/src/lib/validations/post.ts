@@ -10,10 +10,7 @@ export const postSchema = z.object({
         .trim()
         .min(1, "Judul wajib diisi"),
 
-    schedule: z
-        .string()
-        .trim()
-        .min(1, "Jadwal wajib diisi"),
+    schedule: z.date(),
 
     priority: PriorityEnum,
 

@@ -17,9 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { usePost } from "@/hooks/post-tasks/post";
 import { Textarea } from "@/components/ui/textarea";
+import DatePickerFormField from "@/components/common/date-picker/data-picker";
 
 export default function PostForm() {
-	const { form, onSubmit, errorSanitize, successMessage } = usePost();
+	const { form, onSubmit, errorSanitize, successMessage, isLoading } =
+		usePost();
 
 	return (
 		<Form {...form}>
@@ -44,25 +46,10 @@ export default function PostForm() {
 				/>
 				{/* Schedule & Priority */}
 				<div className="flex gap-4">
-					<FormField
+					<DatePickerFormField
 						control={form.control}
 						name="schedule"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel className="font-bold w-full">
-									Schedule
-								</FormLabel>
-								<FormControl className="w-full">
-									<div className="w-full">
-										<Input
-											placeholder="Schedule"
-											{...field}
-										/>
-									</div>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+						from={true}
 					/>
 					<FormField
 						control={form.control}
@@ -125,7 +112,9 @@ export default function PostForm() {
 					type="submit"
 					className={`w-full cursor-pointer font-bold ${successMessage.length > 0 ? "bg-green-600 dark:bg-slate-600 text-white" : ""} ${errorSanitize?.length > 0 ? "bg-red-600 text-white" : ""}`}
 					disabled={
-						successMessage.length > 0 || errorSanitize?.length > 0
+						successMessage.length > 0 ||
+						errorSanitize?.length > 0 ||
+						isLoading
 					}>
 					{errorSanitize || successMessage || "Submit"}
 				</Button>

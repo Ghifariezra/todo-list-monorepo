@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUserProfileQuery } from '@/hooks/query/user/useUserProfileQuery';
-import { useLogoutMutation } from '@/hooks/mutation/useLogoutMutation';
-import { useRefreshMutation } from '@/hooks/mutation/useRefreshMutation';
+import { useLogoutMutation } from '@/hooks/mutation/auth/useLogoutMutation';
+import { useRefreshMutation } from '@/hooks/mutation/auth/useRefreshMutation';
 import { useInterceptor } from '@/services/refresh/interceptor';
 import type { UserProfile } from '@/types/auth/auth';
 import { AuthContext } from '@/hooks/auth/useAuth';

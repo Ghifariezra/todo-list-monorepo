@@ -4,16 +4,19 @@ import { useForm } from 'react-hook-form';
 import { postSchema } from '@/lib/validations/post';
 import { useCallback, useState, useEffect } from 'react';
 import xss from 'xss';
+import { useTasksPostMutation } from '@/hooks/mutation/tasks/useTasksPostMutation';
+import type { TaskPriority } from "@/types/task/task";
 
 export const usePost = () => {
     const [errorSanitize, setErrorSanitize] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const { createTask, isLoading } = useTasksPostMutation();
 
     const form = useForm<z.infer<typeof postSchema>>({
         resolver: zodResolver(postSchema),
         defaultValues: {
             title: '',
-            schedule: '',
+            schedule: new Date(),
             priority: 'low',
             description: '',
         },
@@ -22,34 +25,30 @@ export const usePost = () => {
     const onSubmit = useCallback(async (data: z.infer<typeof postSchema>) => {
         const sanitize = {
             title: xss(data.title.trim()),
-            schedule: xss(data.schedule.trim()),
-            priority: data.priority,
+            schedule: data.schedule.toISOString(),
+            priority: data.priority as TaskPriority,
             description: data.description ? xss(data.description.trim()) : null,
         };
-        console.log('Data sebelum disanitasi:', sanitize);
 
-        // Validasi sanitasi
         if (
-            data.title !== sanitize.title ||
-            data.schedule !== sanitize.schedule ||
+            data.title !== xss(data.title.trim()) ||
             data.priority !== sanitize.priority ||
             (data.description && data.description !== sanitize.description)
         ) {
-            setErrorSanitize(
-                'Demi keamanan, kami tidak dapat memproses data Anda.'
-            );
+            setErrorSanitize('Cek kembali input anda.');
             return;
         }
 
         setErrorSanitize('');
 
         try {
-            console.log('Data yang telah disanitasi:', sanitize);
+            await createTask(sanitize);
             setSuccessMessage('Post berhasil!');
         } catch {
             setErrorSanitize('Terjadi kesalahan saat melakukan post.');
         }
-    }, []);
+    }, [createTask]);
+
 
     // Auto clear errorSanitize setelah 3 detik
     useEffect(() => {
@@ -72,5 +71,5 @@ export const usePost = () => {
         }
     }, [successMessage, form]);
 
-    return { form, onSubmit, errorSanitize, successMessage };
+    return { form, onSubmit, errorSanitize, successMessage, isLoading };
 };

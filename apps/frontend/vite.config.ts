@@ -24,4 +24,24 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom"],
+          radix: [
+            "@radix-ui/react-avatar",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-label",
+            "@radix-ui/react-popover",
+            "@radix-ui/react-scroll-area",
+            "@radix-ui/react-select",
+          ],
+          shadcn: ["class-variance-authority"],
+          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 })

@@ -86,11 +86,11 @@ export function Progress({
 									<div
 										className={`flex justify-center items-center ${
 											priority === "low"
-												? "border-green-500 border-1 text-green-500 dark:bg-green-500"
+												? "bg-green-500"
 												: priority === "medium"
-													? "border-yellow-500 border-1 text-yellow-500 dark:border-yellow-500"
-													: "border-red-500 border-1 text-red-500 dark:bg-red-500"
-										} dark:text-white rounded p-1`}>
+													? "bg-yellow-500"
+													: "bg-red-500"
+										} text-white rounded p-1`}>
 										<ShieldAlert className="size-4" />
 										<div className="h-6 flex items-center p-2">
 											<span className=" font-semibold">

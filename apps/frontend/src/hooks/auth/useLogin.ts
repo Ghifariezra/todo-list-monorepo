@@ -5,7 +5,7 @@ import { loginSchema } from '@/lib/validations/login';
 import { useCallback, useState, useEffect } from 'react';
 import {
     useLoginMutation
-} from '@/hooks/mutation/useLoginMutation';
+} from '@/hooks/mutation/auth/useLoginMutation';
 import xss from 'xss';
 import { useDirect } from '@/hooks/direction/useDirect';
 
