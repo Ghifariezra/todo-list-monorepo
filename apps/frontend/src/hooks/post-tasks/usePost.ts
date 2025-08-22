@@ -7,6 +7,7 @@ import xss from 'xss';
 import { useTasksPostMutation } from '@/hooks/mutation/tasks/useTasksPostMutation';
 import type { TaskPriority } from "@/types/task/task";
 import { normalizeDate } from '@/utilities/date/formatter-date';
+import { getTomorrow } from "@/utilities/date/formatter-date";
 
 export const usePost = () => {
     const [errorSanitize, setErrorSanitize] = useState('');
@@ -17,7 +18,7 @@ export const usePost = () => {
         resolver: zodResolver(postSchema),
         defaultValues: {
             title: '',
-            schedule: new Date(),
+            schedule: getTomorrow(),
             priority: 'low',
             description: '',
         },

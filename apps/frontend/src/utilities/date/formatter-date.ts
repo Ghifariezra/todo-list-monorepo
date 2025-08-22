@@ -6,6 +6,14 @@ export function formatterDate(date: Date) {
     })
 }
 
+export function getTomorrow(): Date {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 1);
+    return d;
+}
+
+
 export function normalizeDate(date: Date): Date {
     return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 }

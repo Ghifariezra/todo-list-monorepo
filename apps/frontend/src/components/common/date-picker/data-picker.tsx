@@ -39,7 +39,7 @@ export default function DatePickerFormField<T extends FieldValues>({
 				return (
 					<FormItem className="flex flex-col gap-3 w-full">
 						<FormLabel className="font-bold">
-							Tanggal Lahir
+							{from ? "Jadwal" : "Tanggal Lahir"}
 						</FormLabel>
 						<Popover>
 							<PopoverTrigger asChild>
