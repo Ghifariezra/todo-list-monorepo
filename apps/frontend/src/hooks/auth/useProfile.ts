@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import xss from "xss";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useUpdateUserMutation, useUpdateUserImageMutation } from "@/hooks/mutation/auth/useProfileMutation";
+import { normalizeDate } from "@/utilities/date/formatter-date";
 
 const useProfile = () => {
     const { user, loading, setUser } = useAuth();
@@ -19,7 +20,7 @@ const useProfile = () => {
             email: "",
             phone: "",
             country: "",
-            date_of_birth: undefined,
+            date_of_birth: new Date(),
             title: "",
             bio: "",
             profile_picture_url: null,
@@ -34,7 +35,7 @@ const useProfile = () => {
                 email: user.email || "",
                 phone: user.phone || "",
                 country: user.country || "",
-                date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
+                date_of_birth: user.date_of_birth ? normalizeDate(new Date(user.date_of_birth)) : undefined,
                 title: user.title || "",
                 bio: user.bio || "",
                 profile_picture_url: null,
@@ -53,7 +54,9 @@ const useProfile = () => {
                 email: xss(values.email?.toLowerCase().trim() ?? ""),
                 phone: xss(values.phone?.trim() ?? ""),
                 country: xss(values.country?.trim() ?? ""),
-                date_of_birth: values.date_of_birth,
+                date_of_birth: values.date_of_birth
+                    ? normalizeDate(new Date(values.date_of_birth))
+                    : undefined,
                 title: xss(values.title?.trim() ?? ""),
                 bio: xss(values.bio?.trim() ?? ""),
             };

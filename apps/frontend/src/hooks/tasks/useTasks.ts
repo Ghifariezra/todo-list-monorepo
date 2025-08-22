@@ -8,6 +8,11 @@ export const useTasks = () => {
     const { data, isLoading } = useUserTasksQuery();
     const { deleteTask, isLoading: isLoadingDelete } = useTasksDeleteMutation();
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [editToggle, setEditToggle] = useState(false);
+
+    const handleEditToggle = useCallback(() => {
+        setEditToggle((prev) => !prev);
+    }, []);
 
     const handleDelete = useCallback( async (id: string) => {
         setDeleteId(id);
@@ -20,5 +25,5 @@ export const useTasks = () => {
         if (data) setTasks(data.tasks as Task[]);
     }, [data]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete };
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle };
 }

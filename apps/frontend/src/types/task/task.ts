@@ -3,7 +3,7 @@ type TaskStatus = 'active' | 'deactivated';
 
 export interface TaskAdd {
     title: string;
-    schedule: string;
+    schedule: Date | null;
     priority: TaskPriority;
     description?: string | null;
 }

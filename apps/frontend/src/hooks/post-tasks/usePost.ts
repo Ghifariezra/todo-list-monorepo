@@ -6,6 +6,7 @@ import { useCallback, useState, useEffect } from 'react';
 import xss from 'xss';
 import { useTasksPostMutation } from '@/hooks/mutation/tasks/useTasksPostMutation';
 import type { TaskPriority } from "@/types/task/task";
+import { normalizeDate } from '@/utilities/date/formatter-date';
 
 export const usePost = () => {
     const [errorSanitize, setErrorSanitize] = useState('');
@@ -25,7 +26,7 @@ export const usePost = () => {
     const onSubmit = useCallback(async (data: z.infer<typeof postSchema>) => {
         const sanitize = {
             title: xss(data.title.trim()),
-            schedule: data.schedule.toISOString(),
+            schedule: data.schedule ? normalizeDate(new Date(data.schedule)) : null,
             priority: data.priority as TaskPriority,
             description: data.description ? xss(data.description.trim()) : null,
         };

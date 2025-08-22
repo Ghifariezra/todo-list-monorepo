@@ -80,6 +80,7 @@ export default function DatePickerFormField<T extends FieldValues>({
 									disabled={(date) => {
 										return disabledDate(date, from);
 									}}
+									required
 								/>
 							</PopoverContent>
 						</Popover>

@@ -6,6 +6,11 @@ export function formatterDate(date: Date) {
     })
 }
 
+export function normalizeDate(date: Date): Date {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+}
+
+
 export function parseDateString(value: string | Date | undefined) {
     if (!value) return undefined;
     if (value instanceof Date) return value;

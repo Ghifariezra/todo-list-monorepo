@@ -8,7 +8,14 @@ import { useTasks } from "@/hooks/tasks/useTasks";
 import { formatterDate } from "@/utilities/date/formatter-date";
 
 export default function TasksLayout() {
-	const { tasks, isLoading, handleDelete, isLoadingDelete } = useTasks();
+	const {
+		tasks,
+		isLoading,
+		handleDelete,
+		isLoadingDelete,
+		editToggle,
+		handleEditToggle,
+	} = useTasks();
 
 	return (
 		<Section id="dashboard" className="!justify-start !items-start">
@@ -49,11 +56,11 @@ export default function TasksLayout() {
 										animate={{ opacity: 1, y: 0 }}
 										exit={{
 											opacity: 0,
+											scaleY: 0,
 											y: -30,
-											scale: 0.9,
 										}}
 										transition={{
-											duration: 0.4,
+											duration: 0.7,
 											ease: "easeInOut",
 										}}>
 										<Progress
@@ -61,6 +68,10 @@ export default function TasksLayout() {
 											idCard={task.id}
 											onDelete={handleDelete}
 											isLoadingDelete={isLoadingDelete}
+											editToggle={editToggle}
+											handleEditToggle={
+												handleEditToggle
+											}
 											description={task.notes}
 											date={formatterDate(
 												new Date(task.schedule)

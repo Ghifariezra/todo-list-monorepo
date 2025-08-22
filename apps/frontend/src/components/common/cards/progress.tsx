@@ -15,6 +15,8 @@ type CardProps = {
 	priority?: string;
 	onDelete?: (id: string) => void;
 	isLoadingDelete?: boolean;
+	editToggle?: boolean;
+	handleEditToggle?: () => void;
 };
 
 export function Progress({
@@ -29,6 +31,8 @@ export function Progress({
 	priority,
 	onDelete,
 	isLoadingDelete,
+	// editToggle,
+	handleEditToggle,
 }: CardProps) {
 	return (
 		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
@@ -69,14 +73,25 @@ export function Progress({
 							{/* Title */}
 							{nameTask ? (
 								<div className="flex flex-col w-full items-center gap-6">
-									<button
-										disabled={isLoadingDelete}
-										onClick={() =>
-											onDelete && onDelete(idCard as string)
-										}
-										className="w-full flex justify-end cursor-pointer hover:text-red-500">
-										<X />
-									</button>
+									<div className="w-full flex justify-between">
+										<button
+											disabled={isLoadingDelete}
+											onClick={
+												onDelete
+													? () => onDelete(idCard || "")
+													: undefined
+											}
+											className="w-fit cursor-pointer hover:text-red-500">
+											<X />
+										</button>
+										<button 
+										onClick={handleEditToggle}
+										className="cursor-pointer">
+											<h1 className="hover:dark:text-yellow-400 hover:text-blue-600 italic underline underline-offset-4 font-light">
+												edit
+											</h1>
+										</button>
+									</div>
 									<div className="w-full min-w-0">
 										<CardTitle
 											className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
