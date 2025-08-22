@@ -61,7 +61,7 @@ export function Progress({
 							{/* Title */}
 							<div className="w-full min-w-0">
 								<CardTitle
-									className={`!text-xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
+									className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
 									{name}
 								</CardTitle>
 							</div>
@@ -78,7 +78,7 @@ export function Progress({
 									}}
 									className="flex flex-col sm:flex-row justify-between items-center w-full text-sm font-normal gap-4">
 									<div className="flex gap-2 w-full justify-center sm:justify-start font-semibold">
-										<div className="flex items-center gap-2 rounded">
+										<div className="flex items-center gap-2 rounded text-base md:text-lg">
 											<CalendarClock className="size-4 shrink-0" />
 											<motion.span>{date}</motion.span>
 										</div>
@@ -93,7 +93,7 @@ export function Progress({
 										} text-white rounded p-1`}>
 										<ShieldAlert className="size-4" />
 										<div className="h-6 flex items-center p-2">
-											<span className=" font-semibold">
+											<span className=" font-semibold text-base md:text-lg">
 												{priority &&
 													priority
 														.charAt(0)
@@ -108,7 +108,7 @@ export function Progress({
 					</AnimatePresence>
 				</motion.div>
 			</CardHeader>
-			{description && (
+			{description ? (
 				<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
 					<motion.h1
 						initial={{ opacity: 0, y: -10 }}
@@ -121,8 +121,26 @@ export function Progress({
 						initial={{ opacity: 0, y: -20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 1, ease: "easeInOut" }}
-						className="text-sm text-gray-500 line-clamp-6 text-justify">
+						className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
 						{description}
+					</motion.div>
+				</motion.div>
+			) : (
+				<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
+					<motion.h1
+						initial={{ opacity: 0, y: -10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.7, ease: "easeInOut" }}
+						className="text-lg font-bold text-center">
+						Notes
+					</motion.h1>
+					<motion.div
+						initial={{ opacity: 0, y: -20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 1, ease: "easeInOut" }}
+						className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
+						Ups, notes kamu masih kosong nih ✨ Tulis sedikit notes
+						biar makin seru!
 					</motion.div>
 				</motion.div>
 			)}

@@ -14,3 +14,24 @@ export function parseDateString(value: string | Date | undefined) {
     const [year, month, day] = value.split('-').map(Number);
     return new Date(year, month - 1, day);
 }
+
+export function checkDate(check: boolean | undefined) {
+    const years = {
+        fromYear: check ? new Date().getFullYear()
+            : new Date().getFullYear() - 100,
+        toYear: check ? new Date().getFullYear() + 100
+            : new Date().getFullYear()
+    }
+
+    return years
+}
+
+export function disabledDate(date: Date, check: boolean | undefined) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (check) {
+        return date < today;
+    }
+    return date > today;
+}

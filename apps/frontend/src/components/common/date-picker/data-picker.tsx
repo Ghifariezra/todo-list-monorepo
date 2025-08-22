@@ -1,13 +1,34 @@
-import { CalendarIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { formatterDate, parseDateString } from '@/utilities/date/formatter-date';
-import type { DatePickerFormProps } from '@/types/auth/auth';
-import type { FieldValues} from 'react-hook-form';
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+	FormField,
+	FormItem,
+	FormLabel,
+	FormControl,
+	FormMessage,
+} from "@/components/ui/form";
+import {
+	formatterDate,
+	parseDateString,
+	checkDate,
+	disabledDate,
+} from "@/utilities/date/formatter-date";
+import type { DatePickerFormProps } from "@/types/auth/auth";
+import type { FieldValues } from "react-hook-form";
 
-export default function DatePickerFormField<T extends FieldValues>({ control, name, date_of_birth, from }: DatePickerFormProps<T>) {
+export default function DatePickerFormField<T extends FieldValues>({
+	control,
+	name,
+	date_of_birth,
+	from,
+}: DatePickerFormProps<T>) {
+	const { fromYear, toYear } = checkDate(from);
 	return (
 		<FormField
 			control={control}
@@ -54,23 +75,10 @@ export default function DatePickerFormField<T extends FieldValues>({ control, na
 									}}
 									initialFocus
 									captionLayout="dropdown"
-									fromYear={
-										from
-											? new Date().getFullYear()
-											: new Date().getFullYear() - 100
-									}
-									toYear={
-										from
-											? new Date().getFullYear() + 100
-											: new Date().getFullYear()
-									}
+									fromYear={fromYear}
+									toYear={toYear}
 									disabled={(date) => {
-										if (from) {
-											const today = new Date();
-											today.setHours(0, 0, 0, 0); // reset jam
-											return date < today; // disable semua tanggal sebelum hari ini
-										}
-										return false; // tidak disable
+										return disabledDate(date, from);
 									}}
 								/>
 							</PopoverContent>
