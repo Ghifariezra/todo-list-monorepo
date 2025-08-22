@@ -1,29 +1,33 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { CalendarClock, ShieldAlert } from "lucide-react";
+import { CalendarClock, ShieldAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type CardProps = {
 	children?: React.ReactNode;
+	nameTask?: string;
 	name?: string;
 	image?: string;
 	description?: string;
 	classNameDashboard?: string;
 	date?: string;
 	priority?: string;
+	onDelete?: (id: string) => void;
 };
 
 export function Progress({
 	children,
+	nameTask,
 	name,
 	image,
 	description,
 	classNameDashboard,
 	date,
 	priority,
+	// onDelete,
 }: CardProps) {
 	return (
-		<Card className="w-full h-fit !flex flex-col px-6 py-10 gap-4 duration-500 ease-in">
+		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
 			<CardHeader className={cn("w-full !flex !px-0")}>
 				<motion.div className="flex items-center w-full gap-2">
 					{image ? (
@@ -59,12 +63,26 @@ export function Progress({
 								classNameDashboard
 							)}>
 							{/* Title */}
-							<div className="w-full min-w-0">
-								<CardTitle
-									className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
-									{name}
-								</CardTitle>
-							</div>
+							{nameTask ? (
+								<div className="flex flex-col w-full items-center gap-6">
+									<div className="w-full flex justify-end cursor-pointer hover:text-red-500">
+										<X />
+									</div>
+									<div className="w-full min-w-0">
+										<CardTitle
+											className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
+											{nameTask}
+										</CardTitle>
+									</div>
+								</div>
+							) : (
+								<div className="w-full min-w-0">
+									<CardTitle
+										className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
+										{name}
+									</CardTitle>
+								</div>
+							)}
 							{/* Date */}
 							{date && (
 								<motion.div
