@@ -8,6 +8,7 @@ import validate from 'deep-email-validator'
 import type { ReqToken, ReqProfile } from './types/request';
 import { UpdateProfileDto } from './dto/update-user.dto';
 import { v4 as uuid } from 'uuid';
+import { CreateTaskDto } from './dto/tasks.dto';
 
 @Injectable()
 export class AppService {
@@ -268,6 +269,26 @@ export class AppService {
 
     return { url: data.publicUrl };
   }
+
+  async addTask(req: ReqProfile, body: CreateTaskDto) {
+    console.log(body);
+    const { description, ...rest } = body;
+
+    const { error } = await this.supabaseClient
+      .from('tasks')
+      .insert({ ...rest, notes: description, user_id: req.user.userId });
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal menambahkan tugas.');
+    }
+
+    return {
+      status: 200,
+      message: 'Tugas berhasil ditambahkan.',
+    }
+  }
+
 
   getCsrfToken(req: ReqToken) {
     const csrfToken = req.csrfToken();

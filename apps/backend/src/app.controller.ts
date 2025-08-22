@@ -8,6 +8,7 @@ import type { ReqToken, ReqProfile } from './types/request';
 import { AuthGuard } from '@nestjs/passport';
 import { minutes, Throttle } from '@nestjs/throttler';
 import { UpdateProfileDto } from './dto/update-user.dto';
+import { CreateTaskDto } from './dto/tasks.dto';
 
 @Controller('auth')
 export class AppController {
@@ -109,6 +110,12 @@ export class AppController {
   @UseGuards(AuthGuard('jwt'))
   uploadProfilePicture(@UploadedFile() file: Express.Multer.File, @Req() req: ReqProfile) {
     return this.appService.uploadProfilePicture(file, req);
+  }
+
+  @Post('user/tasks/add')
+  @UseGuards(AuthGuard('jwt'))
+  addTask(@Req() req: ReqProfile, @Body() body: CreateTaskDto) {
+    return this.appService.addTask(req, body);
   }
 
   @Get()
