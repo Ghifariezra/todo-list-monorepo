@@ -30,8 +30,12 @@ export function disabledDate(date: Date, check: boolean | undefined) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // majukan 1 hari
+    today.setDate(today.getDate() + 1);
+
     if (check) {
         return date < today;
     }
+
     return date > today;
 }

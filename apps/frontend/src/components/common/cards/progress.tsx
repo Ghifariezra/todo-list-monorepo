@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 type CardProps = {
 	children?: React.ReactNode;
 	nameTask?: string;
+	idCard?: string;
 	name?: string;
 	image?: string;
 	description?: string;
@@ -13,18 +14,21 @@ type CardProps = {
 	date?: string;
 	priority?: string;
 	onDelete?: (id: string) => void;
+	isLoadingDelete?: boolean;
 };
 
 export function Progress({
 	children,
 	nameTask,
+	idCard,
 	name,
 	image,
 	description,
 	classNameDashboard,
 	date,
 	priority,
-	// onDelete,
+	onDelete,
+	isLoadingDelete,
 }: CardProps) {
 	return (
 		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
@@ -65,9 +69,14 @@ export function Progress({
 							{/* Title */}
 							{nameTask ? (
 								<div className="flex flex-col w-full items-center gap-6">
-									<div className="w-full flex justify-end cursor-pointer hover:text-red-500">
+									<button
+										disabled={isLoadingDelete}
+										onClick={() =>
+											onDelete && onDelete(idCard as string)
+										}
+										className="w-full flex justify-end cursor-pointer hover:text-red-500">
 										<X />
-									</div>
+									</button>
 									<div className="w-full min-w-0">
 										<CardTitle
 											className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
@@ -96,7 +105,7 @@ export function Progress({
 									}}
 									className="flex flex-col sm:flex-row justify-between items-center w-full text-sm font-normal gap-4">
 									<div className="flex gap-2 w-full justify-center sm:justify-start font-semibold">
-										<div className="flex items-center gap-2 rounded text-base md:text-lg">
+										<div className="flex items-center gap-2 rounded text-base lg:text-lg">
 											<CalendarClock className="size-4 shrink-0" />
 											<motion.span>{date}</motion.span>
 										</div>

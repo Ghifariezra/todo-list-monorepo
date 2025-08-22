@@ -1,14 +1,14 @@
 import Section from "@/components/shared/section";
 import { Dashboard } from "@/components/common/grid/dashboard";
 import { Heading } from "@/components/common/text/text";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Progress } from "@/components/common/cards/progress";
 import { Add } from "@/components/common/add/add";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { formatterDate } from "@/utilities/date/formatter-date";
 
 export default function TasksLayout() {
-	const { tasks, isLoading } = useTasks();
+	const { tasks, isLoading, handleDelete, isLoadingDelete } = useTasks();
 
 	return (
 		<Section id="dashboard" className="!justify-start !items-start">
@@ -35,24 +35,44 @@ export default function TasksLayout() {
 					initial={{ opacity: 0, y: -30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.3, ease: "easeInOut" }}
-					className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-fit">
+					className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 h-fit">
 					{isLoading && (
 						<Progress name="Loading..." priority="🌱 Optional" />
 					)}
 					{!isLoading && (
-						<>
-							{tasks?.map((task) => (
-								<Progress
-									key={task.id}
-									nameTask={task.title}
-									description={task.notes}
-									date={formatterDate(
-										new Date(task.schedule)
-									)}
-									priority={task.priority}
-								/>
-							))}
-						</>
+						<AnimatePresence mode="popLayout">
+							{tasks && tasks.length > 0 ? (
+								tasks.map((task) => (
+									<motion.div
+										key={task.id}
+										initial={{ opacity: 0, y: 30 }}
+										animate={{ opacity: 1, y: 0 }}
+										exit={{
+											opacity: 0,
+											y: -30,
+											scale: 0.9,
+										}}
+										transition={{
+											duration: 0.4,
+											ease: "easeInOut",
+										}}>
+										<Progress
+											nameTask={task.title}
+											idCard={task.id}
+											onDelete={handleDelete}
+											isLoadingDelete={isLoadingDelete}
+											description={task.notes}
+											date={formatterDate(
+												new Date(task.schedule)
+											)}
+											priority={task.priority}
+										/>
+									</motion.div>
+								))
+							) : (
+								<Progress name="No tasks" />
+							)}
+						</AnimatePresence>
 					)}
 				</motion.div>
 			</Dashboard>

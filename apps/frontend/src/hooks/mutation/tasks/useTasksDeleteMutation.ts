@@ -1,22 +1,20 @@
 import { useUserCsrfQuery } from "@/hooks/query/token/useUserCsrfQuery";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { tasksPostRequest } from "@/services/tasks/tasksRequest";
-import type { TaskAdd } from "@/types/task/task";
+import { tasksDeleteRequest } from "@/services/tasks/tasksRequest";
 
-export const useTasksPostMutation = () => {
+export const useTasksDeleteMutation = () => {
     const queryClient = useQueryClient();
     const { data: token, refetch: refetchCsrf } = useUserCsrfQuery();
 
     const mutation = useMutation({
-        mutationFn: async (payload: TaskAdd) => tasksPostRequest(payload, token, refetchCsrf),
+        mutationFn: async (taskId: string) => tasksDeleteRequest(taskId, token, refetchCsrf),
         onSuccess: () => {
-            // invalidate query 'userTasks' agar otomatis refetch
             queryClient.invalidateQueries({ queryKey: ["userTasks"] });
         },
     });
 
     return {
-        createTask: mutation.mutateAsync,
+        deleteTask: mutation.mutateAsync,
         isLoading: mutation.isPending,
         isError: mutation.isError,
         error: mutation.error,

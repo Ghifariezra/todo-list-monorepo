@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { usePost } from "@/hooks/post-tasks/post";
+import { usePost } from "@/hooks/post-tasks/usePost";
 import { Textarea } from "@/components/ui/textarea";
 import DatePickerFormField from "@/components/common/date-picker/data-picker";
 
