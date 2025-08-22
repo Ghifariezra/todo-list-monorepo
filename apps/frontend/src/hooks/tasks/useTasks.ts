@@ -8,22 +8,22 @@ export const useTasks = () => {
     const { data, isLoading } = useUserTasksQuery();
     const { deleteTask, isLoading: isLoadingDelete } = useTasksDeleteMutation();
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [editId, setEditId] = useState<string | null>(null);
     const [editToggle, setEditToggle] = useState(false);
 
-    const handleEditToggle = useCallback(() => {
+    const handleEditToggle = useCallback((id: string) => {
         setEditToggle((prev) => !prev);
+        setEditId(id);
     }, []);
 
     const handleDelete = useCallback( async (id: string) => {
         setDeleteId(id);
-
         await deleteTask(id);
-        
     }, [deleteTask]);
 
     useEffect(() => {
         if (data) setTasks(data.tasks as Task[]);
     }, [data]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle };
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId };
 }

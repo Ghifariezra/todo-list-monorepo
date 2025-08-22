@@ -2,6 +2,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CalendarClock, ShieldAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 type CardProps = {
 	children?: React.ReactNode;
@@ -16,7 +19,8 @@ type CardProps = {
 	onDelete?: (id: string) => void;
 	isLoadingDelete?: boolean;
 	editToggle?: boolean;
-	handleEditToggle?: () => void;
+	handleEditToggle?: (id: string) => void;
+	editId?: string | null;
 };
 
 export function Progress({
@@ -31,8 +35,9 @@ export function Progress({
 	priority,
 	onDelete,
 	isLoadingDelete,
-	// editToggle,
+	editToggle,
 	handleEditToggle,
+	editId,
 }: CardProps) {
 	return (
 		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
@@ -73,30 +78,50 @@ export function Progress({
 							{/* Title */}
 							{nameTask ? (
 								<div className="flex flex-col w-full items-center gap-6">
-									<div className="w-full flex justify-between">
+									<div
+										className={`w-full flex ${editToggle && editId === idCard ? "justify-end" : "justify-between"}`}>
+										{editToggle &&
+										editId === idCard ? null : (
+											<button
+												disabled={isLoadingDelete}
+												onClick={
+													onDelete
+														? () =>
+																onDelete(
+																	idCard || ""
+																)
+														: undefined
+												}
+												className="w-fit cursor-pointer hover:text-red-500">
+												<X />
+											</button>
+										)}
 										<button
-											disabled={isLoadingDelete}
 											onClick={
-												onDelete
-													? () => onDelete(idCard || "")
+												handleEditToggle
+													? () =>
+															handleEditToggle(
+																idCard || ""
+															)
 													: undefined
 											}
-											className="w-fit cursor-pointer hover:text-red-500">
-											<X />
-										</button>
-										<button 
-										onClick={handleEditToggle}
-										className="cursor-pointer">
+											className="cursor-pointer">
 											<h1 className="hover:dark:text-yellow-400 hover:text-blue-600 italic underline underline-offset-4 font-light">
-												edit
+												{editToggle && editId === idCard
+													? "Batal"
+													: "Edit"}
 											</h1>
 										</button>
 									</div>
 									<div className="w-full min-w-0">
-										<CardTitle
-											className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
-											{nameTask}
-										</CardTitle>
+										{editToggle && editId === idCard ? (
+											<Input placeholder={nameTask} />
+										) : (
+											<CardTitle
+												className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
+												{nameTask}
+											</CardTitle>
+										)}
 									</div>
 								</div>
 							) : (
@@ -150,42 +175,77 @@ export function Progress({
 					</AnimatePresence>
 				</motion.div>
 			</CardHeader>
+
 			{description ? (
 				<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
-					<motion.h1
-						initial={{ opacity: 0, y: -10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, ease: "easeInOut" }}
-						className="text-lg font-bold text-center">
-						Notes
-					</motion.h1>
-					<motion.div
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 1, ease: "easeInOut" }}
-						className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
-						{description}
-					</motion.div>
+					{editToggle && editId === idCard ? (
+						<Textarea defaultValue={description} />
+					) : (
+						<>
+							<motion.h1
+								initial={{ opacity: 0, y: -10 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{
+									duration: 0.7,
+									ease: "easeInOut",
+								}}
+								className="text-lg font-bold text-center">
+								Notes
+							</motion.h1>
+							<motion.div
+								initial={{ opacity: 0, y: -20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 1, ease: "easeInOut" }}
+								className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
+								{description}
+							</motion.div>
+						</>
+					)}
 				</motion.div>
 			) : (
-				<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
-					<motion.h1
-						initial={{ opacity: 0, y: -10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, ease: "easeInOut" }}
-						className="text-lg font-bold text-center">
-						Notes
-					</motion.h1>
-					<motion.div
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 1, ease: "easeInOut" }}
-						className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
-						Ups, notes kamu masih kosong nih ✨ Tulis sedikit notes
-						biar makin seru!
-					</motion.div>
+				<>
+					{nameTask && (
+						<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
+							{editToggle && editId === idCard ? (
+								<Textarea defaultValue={description} />
+							) : (
+								<>
+									<motion.h1
+										initial={{ opacity: 0, y: -10 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{
+											duration: 0.7,
+											ease: "easeInOut",
+										}}
+										className="text-lg font-bold text-center">
+										Notes
+									</motion.h1>
+									<motion.div
+										initial={{ opacity: 0, y: -20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{
+											duration: 1,
+											ease: "easeInOut",
+										}}
+										className="text-sm sm:text-base text-gray-500 line-clamp-6 text-justify">
+										Ups, notes kamu masih kosong nih ✨
+										Tulis sedikit notes biar makin seru!
+									</motion.div>
+								</>
+							)}
+						</motion.div>
+					)}
+				</>
+			)}
+
+			{editToggle && editId === idCard && (
+				<motion.div className="flex flex-col gap-2 rounded pt-4">
+					<Button className="cursor-pointer text-base font-bold duration-500 ease-in">
+						Simpan
+					</Button>
 				</motion.div>
 			)}
+
 			{children && (
 				<CardContent className="flex flex-col gap-2">
 					{children}

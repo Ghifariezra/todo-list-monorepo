@@ -15,6 +15,7 @@ export default function TasksLayout() {
 		isLoadingDelete,
 		editToggle,
 		handleEditToggle,
+		editId,
 	} = useTasks();
 
 	return (
@@ -69,6 +70,7 @@ export default function TasksLayout() {
 											onDelete={handleDelete}
 											isLoadingDelete={isLoadingDelete}
 											editToggle={editToggle}
+											editId={editId}
 											handleEditToggle={
 												handleEditToggle
 											}
