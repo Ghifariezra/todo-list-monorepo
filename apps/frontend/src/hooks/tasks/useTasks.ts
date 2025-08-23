@@ -1,6 +1,6 @@
 import { useUserTasksQuery } from '@/hooks/query/tasks/useUserTasksQuery';
 import type { Task } from '@/types/task/task';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTasksDeleteMutation } from '@/hooks/mutation/tasks/useTasksDeleteMutation';
 import type { TaskUpdate } from "@/types/task/task";
 import { useTasksPatchMutation } from '@/hooks/mutation/tasks/useTasksPatchMutation';
@@ -16,6 +16,17 @@ export const useTasks = () => {
     const [editToggle, setEditToggle] = useState(false);
     const { updateTask, isLoading: isLoadingUpdate } = useTasksPatchMutation();
     const [errorSanitize, setErrorSanitize] = useState("");
+
+        const todayTasks = useMemo(
+            () =>
+                tasks.filter((task) => task.schedule === new Date().toDateString()),
+            [tasks]
+        );
+        const upcomingTasks = useMemo(
+            () =>
+                tasks.filter((task) => task.schedule !== new Date().toDateString()),
+            [tasks]
+        );
 
     const handleEditToggle = useCallback((id: string) => {
         setEditToggle((prev) => !prev);
@@ -39,7 +50,7 @@ export const useTasks = () => {
             priority: data.priority as TaskUpdate['priority'],
             description: data.description ? xss(data.description.trim()) : null,
         };
-        
+
         if (
             data.title !== xss(data.title.trim()) ||
             data.priority !== sanitize.priority ||
@@ -60,5 +71,9 @@ export const useTasks = () => {
 
     }, [updateTask, setEditToggle, setEditId]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize };
+    useEffect(() => {
+        if (errorSanitize) setTimeout(() => setErrorSanitize(""), 3000);
+    }, [errorSanitize]);
+
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize, todayTasks, upcomingTasks };
 }

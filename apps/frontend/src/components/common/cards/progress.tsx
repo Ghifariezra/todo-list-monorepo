@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import DatePickerFormField from "@/components/common/date-picker/data-picker";
 import type { CardProps, TaskUpdate } from "@/types/task/task";
 import { formatterDate } from "@/utilities/date/formatter-date";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function Progress({
 	children,
@@ -45,6 +45,7 @@ export function Progress({
 	errorSanitize,
 }: CardProps) {
 	const isEdit = editToggle && editId === idCard;
+	const errorRef = useRef<HTMLDivElement>(null);
 
 	const form = useForm<TaskUpdate>({
 		defaultValues: {
@@ -67,6 +68,15 @@ export function Progress({
 			});
 		}
 	}, [isEdit, idCard, nameTask, date, priority, description, form]);
+
+	useEffect(() => {
+		if (errorSanitize) {
+			errorRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+		}
+	}, [errorSanitize]);
 
 	const handleSubmit = onSubmit
 		? form.handleSubmit(onSubmit)
@@ -151,7 +161,7 @@ export function Progress({
 													onSubmit={handleSubmit}
 													className="flex flex-col gap-6">
 													{errorSanitize && (
-														<p className="text-red-500">
+														<p ref={errorRef} className="text-red-500">
 															{errorSanitize}
 														</p>
 													)}
@@ -343,7 +353,7 @@ export function Progress({
 			</CardHeader>
 
 			{/* Notes view-only */}
-			{!isEdit && (
+			{!isEdit && nameTask && (
 				<motion.div className="flex flex-col gap-2 border-t-1 rounded pt-4">
 					<motion.h1
 						initial={{ opacity: 0, y: -10 }}
@@ -363,7 +373,7 @@ export function Progress({
 			)}
 
 			{children && (
-				<CardContent className="flex flex-col gap-2">
+				<CardContent className="flex flex-col gap-2 !px-0">
 					{children}
 				</CardContent>
 			)}

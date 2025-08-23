@@ -61,6 +61,19 @@ const useProfile = () => {
                 bio: xss(values.bio?.trim() ?? ""),
             };
 
+            if (
+                values.name !== sanitize.name ||
+                values.email !== sanitize.email ||
+                values.phone !== sanitize.phone ||
+                values.country !== sanitize.country ||
+                values.date_of_birth !== sanitize.date_of_birth ||
+                values.title !== sanitize.title ||
+                values.bio !== sanitize.bio
+            ) {
+                setErrorSanitize("Terjadi kesalahan pada input. Demi keamanan, kami tidak dapat memproses data Anda.");
+                return;
+            }
+
             const file = values.profile_picture_url as unknown as File | null;
 
             try {

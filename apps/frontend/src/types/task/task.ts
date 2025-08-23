@@ -1,5 +1,5 @@
 export type TaskPriority = 'low' | 'normal' | 'high';
-type TaskStatus = 'active' | 'deactivated';
+export type TaskStatus = 'active' | 'deactivated';
 
 export interface TaskAdd {
     title: string;
