@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Progress } from "@/components/common/cards/progress";
 import { Add } from "@/components/common/add/add";
 import { useTasks } from "@/hooks/tasks/useTasks";
-import { formatterDate } from "@/utilities/date/formatter-date";
+import { normalizeDate } from "@/utilities/date/formatter-date";
 
 export default function TasksLayout() {
 	const {
@@ -16,6 +16,8 @@ export default function TasksLayout() {
 		editToggle,
 		handleEditToggle,
 		editId,
+		onSubmit,
+		errorSanitize
 	} = useTasks();
 
 	return (
@@ -71,14 +73,14 @@ export default function TasksLayout() {
 											isLoadingDelete={isLoadingDelete}
 											editToggle={editToggle}
 											editId={editId}
-											handleEditToggle={
-												handleEditToggle
-											}
+											handleEditToggle={handleEditToggle}
 											description={task.notes}
-											date={formatterDate(
+											date={normalizeDate(
 												new Date(task.schedule)
 											)}
 											priority={task.priority}
+											onSubmit={onSubmit}
+											errorSanitize={errorSanitize}
 										/>
 									</motion.div>
 								))

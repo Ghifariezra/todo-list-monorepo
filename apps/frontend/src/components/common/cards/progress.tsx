@@ -22,14 +22,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import DatePickerFormField from "@/components/common/date-picker/data-picker";
-import type { CardProps } from "@/types/task/task";
-
-type TaskFormValues = {
-	title: string;
-	schedule: string;
-	priority: "high" | "medium" | "low";
-	description: string;
-};
+import type { CardProps, TaskUpdate } from "@/types/task/task";
+import { formatterDate } from "@/utilities/date/formatter-date";
+import { useEffect } from "react";
 
 export function Progress({
 	children,
@@ -46,22 +41,36 @@ export function Progress({
 	editToggle,
 	handleEditToggle,
 	editId,
+	onSubmit,
+	errorSanitize,
 }: CardProps) {
 	const isEdit = editToggle && editId === idCard;
 
-	const form = useForm<TaskFormValues>({
+	const form = useForm<TaskUpdate>({
 		defaultValues: {
+			id: idCard || "",
 			title: nameTask || "",
-			schedule: date || "",
-			priority: (priority as "high" | "medium" | "low") || "low",
+			schedule: date || null,
+			priority: (priority as TaskUpdate["priority"]) || "low",
 			description: description || "",
 		},
 	});
 
-	const onSubmit = (data: TaskFormValues) => {
-		console.log("update task:", data);
-		// TODO: panggil API update task
-	};
+	useEffect(() => {
+		if (isEdit) {
+			form.reset({
+				id: idCard || "",
+				title: nameTask || "",
+				schedule: date || null,
+				priority: (priority as TaskUpdate["priority"]) || "low",
+				description: description || "",
+			});
+		}
+	}, [isEdit, idCard, nameTask, date, priority, description, form]);
+
+	const handleSubmit = onSubmit
+		? form.handleSubmit(onSubmit)
+		: (e: React.FormEvent) => e.preventDefault();
 
 	return (
 		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
@@ -139,10 +148,13 @@ export function Progress({
 										{isEdit ? (
 											<Form {...form}>
 												<form
-													onSubmit={form.handleSubmit(
-														onSubmit
-													)}
+													onSubmit={handleSubmit}
 													className="flex flex-col gap-6">
+													{errorSanitize && (
+														<p className="text-red-500">
+															{errorSanitize}
+														</p>
+													)}
 													<FormField
 														control={form.control}
 														name="title"
@@ -227,6 +239,10 @@ export function Progress({
 																	<Textarea
 																		placeholder="Deskripsi"
 																		{...field}
+																		value={
+																			field.value ||
+																			""
+																		}
 																	/>
 																</FormControl>
 																<FormMessage />
@@ -236,7 +252,11 @@ export function Progress({
 													<div className="flex gap-4 justify-end">
 														<Button
 															type="submit"
-															className="font-bold cursor-pointer">
+															className="font-bold cursor-pointer"
+															disabled={
+																!form.formState
+																	.isDirty
+															}>
 															Simpan
 														</Button>
 														<Button
@@ -257,10 +277,20 @@ export function Progress({
 												</form>
 											</Form>
 										) : (
-											<CardTitle
-												className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
-												{nameTask}
-											</CardTitle>
+											<motion.div
+												initial={{ opacity: 0, y: 30 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{
+													duration: 0.5,
+													ease: "easeInOut",
+												}}
+												exit={{ opacity: 0, y: 30 }}
+												className="w-full">
+												<CardTitle
+													className={`!text-2xl ${classNameDashboard ? "text-left" : "text-center"} font-bold wrap-anywhere line-clamp-2`}>
+													{nameTask}
+												</CardTitle>
+											</motion.div>
 										)}
 									</div>
 								</div>
@@ -274,7 +304,6 @@ export function Progress({
 							{/* Jika tidak edit → tampilkan Date & Priority */}
 							{!isEdit && date && (
 								<motion.div
-									key={date}
 									initial={{ opacity: 0, y: 30 }}
 									animate={{ opacity: 1, y: 0 }}
 									exit={{ opacity: 0, y: 30 }}
@@ -285,7 +314,7 @@ export function Progress({
 									className="flex flex-col sm:flex-row justify-between items-center w-full text-sm font-normal gap-4">
 									<div className="flex items-center gap-2 rounded text-base lg:text-lg">
 										<CalendarClock className="size-4 shrink-0" />
-										<span>{date}</span>
+										<span>{formatterDate(date)}</span>
 									</div>
 									<div
 										className={`flex justify-center items-center ${

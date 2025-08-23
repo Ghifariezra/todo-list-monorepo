@@ -8,6 +8,10 @@ export interface TaskAdd {
     description?: string | null;
 }
 
+export interface TaskUpdate extends TaskAdd {
+    id: string;
+}
+
 export interface Task {
     id: string;
     user_id: number;
@@ -36,11 +40,13 @@ export type CardProps = {
     image?: string;
     description?: string;
     classNameDashboard?: string;
-    date?: string;
+    date?: Date | null;
     priority?: string;
     onDelete?: (id: string) => void;
     isLoadingDelete?: boolean;
     editToggle?: boolean;
     handleEditToggle?: (id: string) => void;
     editId?: string | null;
+    onSubmit?: (data: TaskUpdate) => void;
+    errorSanitize?: string;
 };

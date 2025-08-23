@@ -42,19 +42,42 @@ function ProfileForm() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 w-full">
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className="flex flex-col gap-8 w-full">
 				{/* Picture */}
-				<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.3, ease: 'easeOut' }} className="flex flex-col items-center gap-3 text-center duration-500 ease-in">
+				<motion.div
+					initial={{ opacity: 0, y: -10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.1, duration: 0.3, ease: "easeOut" }}
+					className="flex flex-col items-center gap-3 text-center duration-500 ease-in">
 					{name && <h1 className="text-2xl font-bold">{name}</h1>}
 					<Avatar className="size-40 shadow-md border">
-						{(preview || profile_picture_url) && <AvatarImage src={preview || profile_picture_url || ''} alt="Profile" />}
-						<AvatarFallback className="font-bold text-2xl">{name?.charAt(0)}</AvatarFallback>
+						{(preview || profile_picture_url) && (
+							<AvatarImage
+								src={preview || profile_picture_url || ""}
+								alt="Profile"
+							/>
+						)}
+						<AvatarFallback className="font-bold text-2xl">
+							{name?.charAt(0)}
+						</AvatarFallback>
 					</Avatar>
 					<motion.div>
-						<Label htmlFor="picture" className="cursor-pointer px-4 py-2 rounded-xl transition border font-bold">
+						<Label
+							htmlFor="picture"
+							className="cursor-pointer px-4 py-2 rounded-xl transition border font-bold">
 							Upload Picture
 						</Label>
-						<Input id="picture" name="profile_picture_url" type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+						<Input
+							id="picture"
+							name="profile_picture_url"
+							type="file"
+							accept="image/*"
+							ref={fileInputRef}
+							className="hidden"
+							onChange={handleFileChange}
+						/>
 					</motion.div>
 				</motion.div>
 
@@ -93,7 +116,9 @@ function ProfileForm() {
 						name="phone"
 						render={({ field }) => (
 							<FormItem className="w-full">
-								<FormLabel className="font-bold">Nomor Telepon</FormLabel>
+								<FormLabel className="font-bold">
+									Nomor Telepon
+								</FormLabel>
 								<FormControl className="w-full">
 									<Input placeholder={phone} {...field} />
 								</FormControl>
@@ -102,7 +127,11 @@ function ProfileForm() {
 						)}
 					/>
 					{/* Date of Birth */}
-					<DatePickerFormField control={form.control} name="date_of_birth" date_of_birth={date_of_birth as string} />
+					<DatePickerFormField
+						control={form.control}
+						name="date_of_birth"
+						date_of_birth={date_of_birth as string}
+					/>
 				</div>
 				{/* Country */}
 				<FormField
@@ -140,7 +169,11 @@ function ProfileForm() {
 						<FormItem className="w-full">
 							<FormLabel className="font-bold">Bio</FormLabel>
 							<FormControl className="w-full">
-								<Textarea className="h-32" placeholder={bio} {...field} />
+								<Textarea
+									className="h-32"
+									placeholder={bio}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -153,16 +186,27 @@ function ProfileForm() {
 							initial={{ opacity: 0, y: -10 }} // Turun dari atas
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -10 }} // Naik kembali saat hilang
-							transition={{ duration: 0.3, ease: 'easeInOut' }}
+							transition={{ duration: 0.3, ease: "easeInOut" }}
 							className="flex items-center gap-2 p-2 bg-red-100 rounded-md text-red-600 border border-red-300">
 							<ShieldAlert />
 							{/* Ikon */}
-							<p className="font-extrabold text-sm">{errorSanitize}</p>
+							<p className="font-extrabold text-sm">
+								{errorSanitize}
+							</p>
 						</motion.div>
 					)}
 				</AnimatePresence>
-				<Button disabled={errorSanitize?.length > 0 || loading || !form.formState.isValid} type="submit" className="w-full cursor-pointer font-bold">
-					{loading ? 'Menyimpan...' : 'Simpan Perubahan'}
+				<Button
+					disabled={
+						errorSanitize?.length > 0 ||
+						loading ||
+						!form.formState.isDirty
+					}
+					type="submit"
+					className="w-full cursor-pointer font-bold">
+					{!form.formState.isDirty
+						? "Tidak ada perubahan"
+						: (loading && "Menyimpan...") || "Simpan"}
 				</Button>
 			</form>
 		</Form>

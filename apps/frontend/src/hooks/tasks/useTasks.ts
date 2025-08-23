@@ -2,6 +2,10 @@ import { useUserTasksQuery } from '@/hooks/query/tasks/useUserTasksQuery';
 import type { Task } from '@/types/task/task';
 import { useState, useEffect, useCallback } from 'react';
 import { useTasksDeleteMutation } from '@/hooks/mutation/tasks/useTasksDeleteMutation';
+import type { TaskUpdate } from "@/types/task/task";
+import { useTasksPatchMutation } from '@/hooks/mutation/tasks/useTasksPatchMutation';
+import xss from 'xss';
+import { normalizeDate } from '@/utilities/date/formatter-date';
 
 export const useTasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -10,6 +14,8 @@ export const useTasks = () => {
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [editToggle, setEditToggle] = useState(false);
+    const { updateTask, isLoading: isLoadingUpdate } = useTasksPatchMutation();
+    const [errorSanitize, setErrorSanitize] = useState("");
 
     const handleEditToggle = useCallback((id: string) => {
         setEditToggle((prev) => !prev);
@@ -25,5 +31,34 @@ export const useTasks = () => {
         if (data) setTasks(data.tasks as Task[]);
     }, [data]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId };
+    const onSubmit = useCallback(async (data: TaskUpdate) => {
+        const sanitize = {
+            id: data.id,
+            title: xss(data.title.trim()),
+            schedule: data.schedule ? normalizeDate(new Date(data.schedule)) : null,
+            priority: data.priority as TaskUpdate['priority'],
+            description: data.description ? xss(data.description.trim()) : null,
+        };
+        
+        if (
+            data.title !== xss(data.title.trim()) ||
+            data.priority !== sanitize.priority ||
+            (data.description && data.description !== sanitize.description)
+        ) {
+            setErrorSanitize('Cek kembali input anda.');
+            return;
+        }
+
+        try {
+            await updateTask(sanitize);
+            setEditToggle(false);
+            setEditId(null);
+        } catch (error) {
+            setErrorSanitize('Gagal memperbarui tugas.');
+            console.error(error);
+        }
+
+    }, [updateTask, setEditToggle, setEditId]);
+
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize };
 }

@@ -112,7 +112,7 @@ export default function PostForm() {
 					disabled={
 						successMessage.length > 0 ||
 						errorSanitize?.length > 0 ||
-						isLoading
+						isLoading || !form.formState.isDirty
 					}>
 					{errorSanitize || successMessage || "Submit"}
 				</Button>
