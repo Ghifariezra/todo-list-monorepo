@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch, UseInterceptors, UploadedFile, Delete, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,13 +8,15 @@ import type { ReqToken, ReqProfile } from './types/request';
 import { AuthGuard } from '@nestjs/passport';
 import { minutes, Throttle } from '@nestjs/throttler';
 import { UpdateProfileDto } from './dto/update-user.dto';
-import { CreateTaskDto } from './dto/tasks.dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
 
 @Controller('auth')
 export class AppController {
   constructor(
     private readonly appService: AppService,
   ) { }
+
+  @Get('google')
 
   @Throttle({
     default: {
@@ -144,5 +146,17 @@ export class AppController {
   @UseGuards(AuthGuard('jwt'))
   updateUser(@Req() req: ReqProfile, @Body() body: UpdateProfileDto) {
     return this.appService.updateProfile(req, body);
+  }
+
+  @Patch('user/tasks/:taskId')
+  @UseGuards(AuthGuard('jwt'))
+  updateTask(@Req() req: ReqProfile, @Param('taskId') taskId: string, @Body() body: UpdateTaskDto) {
+    return this.appService.updateTask(req, taskId, body);
+  }
+
+  @Delete('user/tasks/:taskId')
+  @UseGuards(AuthGuard('jwt'))
+  deleteTask(@Req() req: ReqProfile, @Param('taskId') taskId: string) {
+    return this.appService.deleteTask(req, taskId);
   }
 }

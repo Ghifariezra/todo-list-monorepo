@@ -35,23 +35,17 @@ export class CreateTaskDto {
 
 export class UpdateTaskDto {
     @IsString()
-    @IsOptional()
-    title?: string;
+    @IsNotEmpty()
+    title: string;
 
     @IsString()
     @IsOptional()
     description?: string;
 
     @IsEnum(TaskPriority)
-    @IsOptional()
-    priority?: TaskPriority;
-
-    @IsEnum(TaskStatus)
-    @IsOptional()
-    status?: TaskStatus;
+    priority: TaskPriority;
 
     @IsDateString()
     @IsOptional()
-    schedule?: string;
-
+    schedule?: string; // format ISO string
 }

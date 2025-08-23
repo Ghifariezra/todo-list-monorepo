@@ -6,9 +6,9 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import validate from 'deep-email-validator'
 import type { ReqToken, ReqProfile } from './types/request';
-import { UpdateProfileDto } from './dto/update-user.dto';
+import type { UpdateProfileDto } from './dto/update-user.dto';
 import { v4 as uuid } from 'uuid';
-import { CreateTaskDto } from './dto/tasks.dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
 
 @Injectable()
 export class AppService {
@@ -194,6 +194,58 @@ export class AppService {
     }
   }
 
+  async addTask(req: ReqProfile, body: CreateTaskDto) {
+    const { description, ...rest } = body;
+
+    const { error } = await this.supabaseClient
+      .from('tasks')
+      .insert({ ...rest, notes: description, user_id: req.user.userId });
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal menambahkan tugas.');
+    }
+
+    return {
+      status: 200,
+      message: 'Tugas berhasil ditambahkan.',
+    }
+  }
+
+
+  getCsrfToken(req: ReqToken) {
+    const csrfToken = req.csrfToken();
+
+    if (!csrfToken) {
+      throw new UnauthorizedException('CSRF token tidak ditemukan.');
+    }
+
+    return { csrfToken: csrfToken };
+  }
+
+  getProfile(req: ReqProfile) {
+    return req.user;
+  }
+
+  async getTasks(req: ReqProfile) {
+    const { data, error } = await this.supabaseClient
+      .from('tasks')
+      .select('*')
+      .eq('user_id', req.user.userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      throw new BadRequestException('Gagal mendapatkan data tugas pengguna.');
+    }
+
+    return {
+      status: 200,
+      message: 'Data tugas pengguna berhasil didapatkan.',
+      tasks: data
+    }
+  }
+
   async updateProfile(req: ReqProfile, body: UpdateProfileDto) {
     const { error } = await this.supabaseClient
       .from('users')
@@ -270,56 +322,40 @@ export class AppService {
     return { url: data.publicUrl };
   }
 
-  async addTask(req: ReqProfile, body: CreateTaskDto) {
-    console.log(body);
+  async updateTask(req: ReqProfile, taskId: string, body: UpdateTaskDto) {
     const { description, ...rest } = body;
-
     const { error } = await this.supabaseClient
       .from('tasks')
-      .insert({ ...rest, notes: description, user_id: req.user.userId });
+      .update({ ...rest, notes: description })
+      .eq('id', taskId)
+      .eq('user_id', req.user.userId);
 
     if (error) {
       console.error(error);
-      throw new BadRequestException('Gagal menambahkan tugas.');
+      throw new BadRequestException('Gagal memperbarui tugas.');
     }
 
     return {
       status: 200,
-      message: 'Tugas berhasil ditambahkan.',
+      message: 'Tugas berhasil diperbarui.',
     }
   }
 
-
-  getCsrfToken(req: ReqToken) {
-    const csrfToken = req.csrfToken();
-
-    if (!csrfToken) {
-      throw new UnauthorizedException('CSRF token tidak ditemukan.');
-    }
-
-    return { csrfToken: csrfToken };
-  }
-
-  getProfile(req: ReqProfile) {
-    return req.user;
-  }
-
-  async getTasks(req: ReqProfile) {
-    const { data, error } = await this.supabaseClient
+  async deleteTask(req: ReqProfile, taskId: string) {
+    const { error } = await this.supabaseClient
       .from('tasks')
-      .select('*')
-      .eq('user_id', req.user.userId)
-      .order('created_at', { ascending: false });
+      .delete()
+      .eq('id', taskId)
+      .eq('user_id', req.user.userId);
 
     if (error) {
       console.error(error);
-      throw new BadRequestException('Gagal mendapatkan data tugas pengguna.');
+      throw new BadRequestException('Gagal menghapus tugas.');
     }
 
     return {
       status: 200,
-      message: 'Data tugas pengguna berhasil didapatkan.',
-      tasks: data
+      message: 'Tugas berhasil dihapus.',
     }
   }
 }
