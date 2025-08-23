@@ -11,29 +11,41 @@ export const useTasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const { data, isLoading } = useUserTasksQuery();
     const { deleteTask, isLoading: isLoadingDelete } = useTasksDeleteMutation();
+    const [selected, setSelected] = useState("default");
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [editToggle, setEditToggle] = useState(false);
     const { updateTask, isLoading: isLoadingUpdate } = useTasksPatchMutation();
     const [errorSanitize, setErrorSanitize] = useState("");
 
-        const todayTasks = useMemo(
-            () =>
-                tasks.filter((task) => task.schedule === new Date().toDateString()),
-            [tasks]
-        );
-        const upcomingTasks = useMemo(
-            () =>
-                tasks.filter((task) => task.schedule !== new Date().toDateString()),
-            [tasks]
-        );
+    const todayTasks = useMemo(
+        () =>
+            tasks.filter((task) => task.schedule === new Date().toDateString()),
+        [tasks]
+    );
+
+    const upcomingTasks = useMemo(() => {
+        return tasks
+            .filter((task) => task.schedule !== new Date().toDateString())
+            .sort((a, b) => {
+                const dateA = new Date(a.schedule);
+                const dateB = new Date(b.schedule);
+                return dateA.getTime() - dateB.getTime(); // ascending
+            });
+    }, [tasks]);
+
+    const filteredTasks = useMemo(() => {
+        if (selected === "" || selected === "default") return tasks;
+        return tasks.filter((task) => task.priority === selected);
+    }, [tasks, selected]);
+
 
     const handleEditToggle = useCallback((id: string) => {
         setEditToggle((prev) => !prev);
         setEditId(id);
     }, []);
 
-    const handleDelete = useCallback( async (id: string) => {
+    const handleDelete = useCallback(async (id: string) => {
         setDeleteId(id);
         await deleteTask(id);
     }, [deleteTask]);
@@ -75,5 +87,5 @@ export const useTasks = () => {
         if (errorSanitize) setTimeout(() => setErrorSanitize(""), 3000);
     }, [errorSanitize]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize, todayTasks, upcomingTasks };
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize, todayTasks, upcomingTasks, filteredTasks, selected, setSelected };
 }

@@ -38,7 +38,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
 			<Table>
 				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id} className="bg-gray-100">
+						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
 								return (
 									<TableHead
