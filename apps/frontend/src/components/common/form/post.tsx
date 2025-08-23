@@ -62,7 +62,7 @@ export default function PostForm() {
 								<Select
 									onValueChange={field.onChange}
 									value={field.value}>
-									<FormControl className="w-full">
+									<FormControl className="w-full cursor-pointer">
 										<SelectTrigger>
 											<SelectValue placeholder="Pilih Prioritas" />
 										</SelectTrigger>
@@ -93,9 +93,7 @@ export default function PostForm() {
 					name="description"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel className="font-bold">
-								Description
-							</FormLabel>
+							<FormLabel className="font-bold">Catatan</FormLabel>
 							<FormControl className="w-full">
 								<div className="w-full">
 									<Textarea

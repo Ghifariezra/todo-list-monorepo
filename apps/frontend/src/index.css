@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap');
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import url("https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,9 +118,13 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+	
+	html body[data-scroll-locked] {
+      @apply !mx-0 !overflow-visible;
+    }
 
 	.font-libertinus {
-		font-family: 'Libertinus Sans', sans-serif !important;
+		font-family: "Libertinus Sans", sans-serif !important;
 	}
 
 	.navbar {

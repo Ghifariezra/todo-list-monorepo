@@ -27,3 +27,20 @@ export interface TaskResponsePOST {
     status: string;
     message: string;
 }
+
+export type CardProps = {
+    children?: React.ReactNode;
+    nameTask?: string;
+    idCard?: string;
+    name?: string;
+    image?: string;
+    description?: string;
+    classNameDashboard?: string;
+    date?: string;
+    priority?: string;
+    onDelete?: (id: string) => void;
+    isLoadingDelete?: boolean;
+    editToggle?: boolean;
+    handleEditToggle?: (id: string) => void;
+    editId?: string | null;
+};
