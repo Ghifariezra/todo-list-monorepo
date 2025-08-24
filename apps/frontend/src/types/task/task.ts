@@ -1,6 +1,13 @@
 export type TaskPriority = 'low' | 'normal' | 'high';
 export type TaskStatus = 'active' | 'deactivated';
 
+export interface TaskTitle {
+    taskId: string[];
+    title: string[];
+    date: Date;
+    reminder: boolean;
+}
+
 export interface TaskAdd {
     title: string;
     schedule: Date | null;

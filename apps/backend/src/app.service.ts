@@ -8,11 +8,13 @@ import validate from 'deep-email-validator'
 import type { ReqToken, ReqProfile } from './types/request';
 import type { UpdateProfileDto } from './dto/update-user.dto';
 import { v4 as uuid } from 'uuid';
-import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
+import { CreateTaskDto, EmailPayloadDto, UpdateTaskDto } from './dto/tasks.dto';
+import nodemailer from "nodemailer";
 
 @Injectable()
 export class AppService {
   private readonly saltRounds = 10;
+  // private resend = new Resend(process.env.RESEND_API_KEY);
   constructor(
     @Inject('SUPABASE_ADMIN_CLIENT')
     private readonly supabaseClient: SupabaseClient,
@@ -209,6 +211,33 @@ export class AppService {
     return {
       status: 200,
       message: 'Tugas berhasil ditambahkan.',
+    }
+  }
+
+  async sendEmail(req: ReqProfile, body: EmailPayloadDto) {
+    const transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+
+    // console.log('=== DEBUG EMAIL ===');
+    // console.log('Type:', typeof body.content);
+    // console.log('Content preview:', body.content.substring(0, 200));
+    // console.log('==================');
+
+    await transport.sendMail({
+      from: `Achievly <${process.env.EMAIL}>`,
+      to: req.user.email,
+      subject: "Pengingat tugas dari Achievly!",
+      html: body.content
+    });
+
+    return {
+      status: 200,
+      message: 'Email berhasil dikirim.',
     }
   }
 

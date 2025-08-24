@@ -57,3 +57,14 @@ export class UpdateTaskDto {
     @IsOptional()
     reminder?: boolean = false;
 }
+
+export class EmailPayloadDto {
+    @IsNotEmpty()
+    taskId: string[];
+
+    @IsString()
+    content: string;
+
+    @IsBoolean()
+    reminder: boolean
+}
