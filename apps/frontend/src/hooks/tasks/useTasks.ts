@@ -7,15 +7,8 @@ import { useTasksPatchMutation } from '@/hooks/mutation/tasks/useTasksPatchMutat
 import xss from 'xss';
 import { normalizeDate } from '@/utilities/date/formatter-date';
 import type { TaskTitle } from '@/types/task/task';
-import { useAuth } from "@/hooks/auth/useAuth";
-import Email from "@/components/common/email/email";
-import { render } from "@react-email/render";
-import { useTaskSchedulePostMutation } from '@/hooks/mutation/tasks/useTaskSchedulePostMutation';
-import type { EmailPayload } from '@/types/task/scheduler/schedule';
 
 export const useTasks = () => {
-    const { user } = useAuth();
-    const { scheduleTask } = useTaskSchedulePostMutation();
     const [tasks, setTasks] = useState<Task[]>([]);
     const { data, isLoading } = useUserTasksQuery();
     const { deleteTask, isLoading: isLoadingDelete } = useTasksDeleteMutation();
@@ -71,37 +64,6 @@ export const useTasks = () => {
     useEffect(() => {
         if (data) setTasks(data.tasks as Task[]);
     }, [data]);
-
-    useEffect(() => {
-        if (upcomingTasks.length > 0) {
-            const taskReminder = upcomingTasks.filter((t) => t.reminder);
-            setTaskTitle({
-                taskId: taskReminder.map((t) => t.id),
-                title: taskReminder.map((t) => t.title),
-                date: normalizeDate(new Date(taskReminder[0].schedule)),
-                reminder: taskReminder[0].reminder
-            });
-        }
-    }, [upcomingTasks]);
-
-    useEffect(() => {
-        const sendEmail = async () => {
-            if (taskTitle.title.length > 0 && user?.name) {
-                const html = await render(
-                    Email({ name: user.name, taskTitle })
-                );
-
-                const emailPayload: EmailPayload = { 
-                    taskId: taskTitle.taskId, 
-                    content: html,
-                    reminder: taskTitle.reminder 
-                };
-
-                await scheduleTask(emailPayload);
-            }
-        };
-        sendEmail();
-    }, [taskTitle, user, scheduleTask]);
 
     const onSubmit = useCallback(async (data: TaskUpdate) => {
         const sanitize = {

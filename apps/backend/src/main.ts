@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-// import { XssCleanPipe } from './pipes/xss-clean.pipe';
+import { XssCleanPipe } from './pipes/xss-clean.pipe';
 import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -32,7 +32,7 @@ async function bootstrap() {
   );
 
   app.useGlobalPipes(
-    // new XssCleanPipe(),
+    new XssCleanPipe(),
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,

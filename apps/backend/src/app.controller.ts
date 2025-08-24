@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch, UseInterceptors, UploadedFile, Delete, Param, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, UseGuards, UnauthorizedException, Patch, UseInterceptors, UploadedFile, Delete, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,9 +8,7 @@ import type { ReqToken, ReqProfile } from './types/request';
 import { AuthGuard } from '@nestjs/passport';
 import { minutes, Throttle } from '@nestjs/throttler';
 import { UpdateProfileDto } from './dto/update-user.dto';
-import { CreateTaskDto, UpdateTaskDto, EmailPayloadDto } from './dto/tasks.dto';
-import { XssCleanPipe } from './pipes/xss-clean.pipe';
-
+import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
 
 @Controller('auth')
 export class AppController {
@@ -27,7 +25,7 @@ export class AppController {
     }
   })
   @Post('signup')
-  @UsePipes(XssCleanPipe)
+  
   signup(@Body() body: CreateUserDto) {
     return this.appService.signup(body);
   }
@@ -38,7 +36,6 @@ export class AppController {
       ttl: minutes(1),
     }
   })
-  @UsePipes(XssCleanPipe)
   @Post('login')
   async login(@Body() body: LoginDto, @Res() res: Response) {
     const { access_token, refresh_token, user } = await this.appService.login(body);
@@ -120,15 +117,9 @@ export class AppController {
 
   @Post('user/tasks/add')
   @UseGuards(AuthGuard('jwt'))
-  @UsePipes(XssCleanPipe)
+  
   addTask(@Req() req: ReqProfile, @Body() body: CreateTaskDto) {
     return this.appService.addTask(req, body);
-  }
-
-  @Post('user/tasks/send-email')
-  @UseGuards(AuthGuard('jwt'))
-  sendTask(@Req() req: ReqProfile, @Body() body: EmailPayloadDto) {
-    return this.appService.sendEmail(req, body);
   }
 
   @Get()
@@ -155,21 +146,21 @@ export class AppController {
 
   @Patch('user/update')
   @UseGuards(AuthGuard('jwt'))
-  @UsePipes(XssCleanPipe)
+  
   updateUser(@Req() req: ReqProfile, @Body() body: UpdateProfileDto) {
     return this.appService.updateProfile(req, body);
   }
 
   @Patch('user/tasks/:taskId')
   @UseGuards(AuthGuard('jwt'))
-  @UsePipes(XssCleanPipe)
+  
   updateTask(@Req() req: ReqProfile, @Param('taskId') taskId: string, @Body() body: UpdateTaskDto) {
     return this.appService.updateTask(req, taskId, body);
   }
 
   @Delete('user/tasks/:taskId')
   @UseGuards(AuthGuard('jwt'))
-  @UsePipes(XssCleanPipe)
+  
   deleteTask(@Req() req: ReqProfile, @Param('taskId') taskId: string) {
     return this.appService.deleteTask(req, taskId);
   }

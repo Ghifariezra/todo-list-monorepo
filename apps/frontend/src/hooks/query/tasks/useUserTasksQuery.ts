@@ -6,6 +6,6 @@ export const useUserTasksQuery = () => {
     return useQuery({
         queryKey: ["userTasks"],
         queryFn: async () => await fetchTasks(),
-        refetchOnWindowFocus: false,
+        refetchOnWindowFocus: true,
     });
 };

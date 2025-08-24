@@ -8,14 +8,48 @@ import {
 	Button,
 	Hr,
 } from "@react-email/components";
-import { formatterDate } from "@/utilities/date/formatter-date";
-import type { ReminderEmailProps } from "@/types/task/scheduler/schedule";
+import { render } from "@react-email/render";
 
-export default function Email({ name, taskTitle }: ReminderEmailProps) {
-	return <ReminderEmail name={name} taskTitle={taskTitle} />;
+export function normalizeDate(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
 }
 
-function ReminderEmail({ name, taskTitle }: ReminderEmailProps) {
+export function formatterDate(date: Date) {
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+interface TaskTitle {
+  taskId: string[];
+  title: string[];
+  date: Date;
+  reminder: boolean;
+}
+interface ReminderEmailProps {
+	name: string;
+	taskTitle: TaskTitle;
+}
+
+
+
+// ✅ perbaikan
+export default async function Email({
+  name,
+  taskTitle,
+}: ReminderEmailProps): Promise<string> {
+  return await render(<ReminderEmail name={name} {...taskTitle} />);
+}
+
+
+
+function ReminderEmail({ name, title, date }: {
+	name: string;
+	title: TaskTitle["title"];
+	date: TaskTitle["date"];}) {
 	return (
 		<Html>
 			<Tailwind>
@@ -48,14 +82,14 @@ function ReminderEmail({ name, taskTitle }: ReminderEmailProps) {
 						<Text className="text-sm text-gray-600 mt-2">
 							📅 Jadwal:{" "}
 							<span className="font-medium text-gray-900">
-								{formatterDate(taskTitle.date)}
+								{formatterDate(date)}
 							</span>
 						</Text>
 						<Text className="text-lg font-semibold text-gray-900 mb-3">
 							📝 Daftar Tugas:
 							<ul className="list-decimal list-inside text-gray-700 leading-relaxed mb-4">
-								{taskTitle.title.map((title, i) => (
-									<li key={i} className="text-xl font-semibold">{title}</li>
+								{title.map((t, i) => (
+									<li key={i} className="text-xl font-semibold">{t}</li>
 								))}
 							</ul>
 						</Text>

@@ -279,6 +279,7 @@ export function Progress({
 																		onCheckedChange={
 																			field.onChange
 																		}
+																		className="cursor-pointer"
 																	/>
 																</FormControl>
 																<FormLabel className="font-bold cursor-pointer">

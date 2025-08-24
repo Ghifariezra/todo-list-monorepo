@@ -10,9 +10,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { ThrottlerModule, ThrottlerGuard, minutes } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'frontend/dist'),
       exclude: ['/api*'],
@@ -32,7 +34,7 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot({
       throttlers: [{
         ttl: minutes(1), 
-        limit: 100,
+        limit: 10,
         ignoreUserAgents: [
           /googlebot/i,
           /bingbot/i,

@@ -8,8 +8,10 @@ import validate from 'deep-email-validator'
 import type { ReqToken, ReqProfile } from './types/request';
 import type { UpdateProfileDto } from './dto/update-user.dto';
 import { v4 as uuid } from 'uuid';
-import { CreateTaskDto, EmailPayloadDto, UpdateTaskDto } from './dto/tasks.dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
 import nodemailer from "nodemailer";
+import Email, { normalizeDate } from './email/email';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AppService {
@@ -213,8 +215,86 @@ export class AppService {
       message: 'Tugas berhasil ditambahkan.',
     }
   }
+  
+  // Cron jalan tiap menit (buat testing)
+  @Cron(CronExpression.EVERY_DAY_AT_7AM)
+  async handleDailyReminder() {
+    console.log("⏰ Menjalankan pengingat tugas...");
+    await this.sendAllReminders();
+  }
 
-  async sendEmail(req: ReqProfile, body: EmailPayloadDto) {
+  async sendAllReminders() {
+    const today = this.formatDateToString(new Date());
+
+    // Ambil hanya task hari ini yang reminder = true
+    const { data: tasks, error } = await this.supabaseClient
+      .from('tasks')
+      .select('id, title, user_id, schedule, reminder')
+      .eq('schedule', today)
+      .eq('reminder', true);
+
+    if (error || !tasks) {
+      console.error('Gagal mengambil tugas:', error);
+      return { status: 500, message: 'Gagal mendapatkan tugas.' };
+    }
+
+    // Kelompokkan task berdasarkan user
+    const tasksByUser = tasks.reduce((acc: Record<string, any[]>, task) => {
+      if (!acc[task.user_id]) {
+        acc[task.user_id] = [];
+      }
+      acc[task.user_id].push(task);
+      return acc;
+    }, {});
+
+    for (const userId in tasksByUser) {
+      const userTasks = tasksByUser[userId];
+
+      // Ambil data user
+      const { data: userData } = await this.supabaseClient
+        .from('users')
+        .select('name, email')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (userData) {
+        const todayStr = this.formatDateToString(new Date()) ?? new Date().toISOString().split("T")[0];
+
+        // Buat konten email
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        const htmlContent = await Email({
+          name: userData.name,
+          taskTitle: {
+            date: normalizeDate(new Date(todayStr)),
+            title: userTasks.map(t => t.title),
+            reminder: true,
+            taskId: userTasks.map(t => t.id),
+          },
+        });
+
+        // Kirim email
+        if (userData.email) {
+          const info = await this.sendEmail(userData.email, htmlContent);
+
+          if (info && info.messageId) {
+            console.log(`✅ Pengingat tugas berhasil dikirim ke ${userData.email}.`);
+
+            // Update semua task user jadi reminder = false
+            const taskIds = userTasks.map(t => t.id);
+            await this.supabaseClient
+              .from('tasks')
+              .update({ reminder: false })
+              .in('id', taskIds);
+          }
+        }
+      }
+    }
+
+    return { status: 200, message: 'Pengingat tugas berhasil dikirim.' };
+  }
+
+
+  async sendEmail(to: string, html: string) {
     const transport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -223,24 +303,15 @@ export class AppService {
       },
     });
 
-    // console.log('=== DEBUG EMAIL ===');
-    // console.log('Type:', typeof body.content);
-    // console.log('Content preview:', body.content.substring(0, 200));
-    // console.log('==================');
-
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: `Achievly <${process.env.EMAIL}>`,
-      to: req.user.email,
+      to: to,
       subject: "Pengingat tugas dari Achievly!",
-      html: body.content
+      html: html
     });
 
-    return {
-      status: 200,
-      message: 'Email berhasil dikirim.',
-    }
+    return info
   }
-
 
   getCsrfToken(req: ReqToken) {
     const csrfToken = req.csrfToken();

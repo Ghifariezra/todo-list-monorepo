@@ -117,6 +117,7 @@ export default function PostForm() {
 								<Checkbox
 									checked={field.value}
 									onCheckedChange={field.onChange}
+									className="cursor-pointer"
 								/>
 							</FormControl>
 							<FormLabel className="font-bold cursor-pointer">

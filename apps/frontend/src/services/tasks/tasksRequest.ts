@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { TaskResponse, TaskAdd, TaskResponsePOST, TaskUpdate } from '@/types/task/task';
-import type { EmailPayload } from '@/types/task/scheduler/schedule';
 
 export const tasksGetRequest = () => {
     const fetchTasks = async (): Promise<TaskResponse | null> => {
@@ -30,31 +29,6 @@ export const tasksPostRequest = async (payload: TaskAdd, token?: string, refetch
         if (!csrfToken) throw new Error("CSRF token tidak tersedia");
 
         const { data } = await axios.post<TaskResponsePOST>('/api/auth/user/tasks/add', payload, {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken
-            },
-        });
-        
-        return data;
-    } catch {
-        return null;
-    }
-};
-
-export const taskSchedulePostRequest = async (payload: EmailPayload, token?: string, refetchCsrf?: () => Promise<{ data?: string }>): Promise<TaskResponsePOST | null> => {
-    try {
-        let csrfToken = token;
-
-        if (!csrfToken && refetchCsrf) {
-            const refetchResult = await refetchCsrf();
-            csrfToken = refetchResult.data;
-        }
-
-        if (!csrfToken) throw new Error("CSRF token tidak tersedia");
-
-        const { data } = await axios.post<TaskResponsePOST>('/api/auth/user/tasks/send-email', payload, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
