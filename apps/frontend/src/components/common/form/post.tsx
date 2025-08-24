@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { usePost } from "@/hooks/post-tasks/usePost";
 import { Textarea } from "@/components/ui/textarea";
 import DatePickerFormField from "@/components/common/date-picker/data-picker";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function PostForm() {
 	const { form, onSubmit, errorSanitize, successMessage, isLoading } =
@@ -106,13 +107,32 @@ export default function PostForm() {
 						</FormItem>
 					)}
 				/>
+				{/* ✅ Checkbox Reminder */}
+				<FormField
+					control={form.control}
+					name="reminder"
+					render={({ field }) => (
+						<FormItem className="flex items-center space-x-2">
+							<FormControl>
+								<Checkbox
+									checked={field.value}
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormLabel className="font-bold cursor-pointer">
+								Reminder
+							</FormLabel>
+						</FormItem>
+					)}
+				/>
 				<Button
 					type="submit"
 					className={`w-full cursor-pointer font-bold ${successMessage.length > 0 ? "bg-green-600 dark:bg-slate-600 text-white" : ""} ${errorSanitize?.length > 0 ? "bg-red-600 text-white" : ""}`}
 					disabled={
 						successMessage.length > 0 ||
 						errorSanitize?.length > 0 ||
-						isLoading || !form.formState.isDirty
+						isLoading ||
+						!form.formState.isDirty
 					}>
 					{errorSanitize || successMessage || "Submit"}
 				</Button>

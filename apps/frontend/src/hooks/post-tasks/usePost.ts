@@ -14,13 +14,14 @@ export const usePost = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const { createTask, isLoading } = useTasksPostMutation();
 
-    const form = useForm<z.infer<typeof postSchema>>({
+    const form = useForm({
         resolver: zodResolver(postSchema),
         defaultValues: {
             title: '',
             schedule: getTomorrow(),
             priority: 'low',
             description: '',
+            reminder: false
         },
     });
 
@@ -30,6 +31,7 @@ export const usePost = () => {
             schedule: data.schedule ? normalizeDate(new Date(data.schedule)) : null,
             priority: data.priority as TaskPriority,
             description: data.description ? xss(data.description.trim()) : null,
+            reminder: data.reminder
         };
 
         if (

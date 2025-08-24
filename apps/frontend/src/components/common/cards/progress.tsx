@@ -25,6 +25,7 @@ import DatePickerFormField from "@/components/common/date-picker/data-picker";
 import type { CardProps, TaskUpdate } from "@/types/task/task";
 import { formatterDate } from "@/utilities/date/formatter-date";
 import { useEffect, useRef } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function Progress({
 	children,
@@ -43,6 +44,7 @@ export function Progress({
 	editId,
 	onSubmit,
 	errorSanitize,
+	reminder,
 }: CardProps) {
 	const isEdit = editToggle && editId === idCard;
 	const errorRef = useRef<HTMLDivElement>(null);
@@ -54,6 +56,7 @@ export function Progress({
 			schedule: date || null,
 			priority: (priority as TaskUpdate["priority"]) || "low",
 			description: description || "",
+			reminder: reminder || false,
 		},
 	});
 
@@ -65,9 +68,10 @@ export function Progress({
 				schedule: date || null,
 				priority: (priority as TaskUpdate["priority"]) || "low",
 				description: description || "",
+				reminder: reminder || false,
 			});
 		}
-	}, [isEdit, idCard, nameTask, date, priority, description, form]);
+	}, [isEdit, idCard, nameTask, date, priority, description, form, reminder]);
 
 	useEffect(() => {
 		if (errorSanitize) {
@@ -83,7 +87,7 @@ export function Progress({
 		: (e: React.FormEvent) => e.preventDefault();
 
 	return (
-		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in">
+		<Card className="w-full h-fit !flex flex-col px-6 pt-10 pb-14 gap-4 duration-500 ease-in overflow-hidden">
 			<CardHeader className={cn("w-full !flex !px-0")}>
 				<motion.div className="flex items-center w-full gap-2">
 					{/* Avatar image */}
@@ -161,7 +165,9 @@ export function Progress({
 													onSubmit={handleSubmit}
 													className="flex flex-col gap-6">
 													{errorSanitize && (
-														<p ref={errorRef} className="text-red-500">
+														<p
+															ref={errorRef}
+															className="text-red-500">
 															{errorSanitize}
 														</p>
 													)}
@@ -256,6 +262,28 @@ export function Progress({
 																	/>
 																</FormControl>
 																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													{/* ✅ Checkbox Reminder */}
+													<FormField
+														control={form.control}
+														name="reminder"
+														render={({ field }) => (
+															<FormItem className="flex items-center space-x-2">
+																<FormControl>
+																	<Checkbox
+																		checked={
+																			field.value
+																		}
+																		onCheckedChange={
+																			field.onChange
+																		}
+																	/>
+																</FormControl>
+																<FormLabel className="font-bold cursor-pointer">
+																	Reminder
+																</FormLabel>
 															</FormItem>
 														)}
 													/>

@@ -1,5 +1,3 @@
-// dashboard.tsx
-
 import Section from "@/components/shared/section";
 import { Greeting } from "@/components/common/cards/greeting";
 import { Progress } from "@/components/common/cards/progress";
@@ -14,40 +12,34 @@ const columnHelper = createColumnHelper<Task>();
 // Definisikan kolom untuk tabel "Today's Task"
 const todayTaskColumns = [
 	columnHelper.accessor("title", {
-		header: "Title",
-		cell: (info) => info.getValue(),
+		header: () => <p className="text-center">Judul</p>,
+		cell: (info) => <p className="text-center">{info.getValue()}</p>,
 	}),
 	columnHelper.accessor("schedule", {
-		header: "Schedule",
-		cell: (info) => info.getValue(),
+		header: () => <p className="text-center">Jadwal</p>,
+		cell: (info) => <p className="text-center">{info.getValue()}</p>,
 	}),
 	columnHelper.accessor("priority", {
-		header: "Priority",
-		cell: (info) => info.getValue(),
+		header: () => <p className="text-center">Prioritas</p>,
+		cell: (info) => <p className="text-center">{info.getValue()}</p>,
 	}),
 	columnHelper.accessor("status", {
-		header: "Status",
-		cell: (info) => info.getValue(),
+		header: () => <p className="text-center">Status</p>,
+		cell: (info) => <p className="text-center">{info.getValue()}</p>,
 	}),
-];
-
-// Definisikan kolom untuk tabel "Upcoming Tasks"
-const upcomingTaskColumns = [
-	columnHelper.accessor("title", {
-		header: "Title",
-		cell: (info) => info.getValue(),
-	}),
-	columnHelper.accessor("schedule", {
-		header: "Schedule",
-		cell: (info) => info.getValue(),
-	}),
-	columnHelper.accessor("priority", {
-		header: "Priority",
-		cell: (info) => info.getValue(),
-	}),
-	columnHelper.accessor("status", {
-		header: "Status",
-		cell: (info) => info.getValue(),
+	columnHelper.accessor("reminder", {
+		header: () => <p className="text-center">Reminder</p>,
+		cell: (info) => {
+			return info.getValue() ? (
+				<div className="bg-green-500 text-white px-2 py-1 rounded">
+					<p className="text-center">Ya</p>
+				</div>
+			) : (
+				<div className="bg-red-500 text-white px-2 py-1 rounded">
+					<p className="text-center">Tidak</p>
+				</div>
+			);
+		},
 	}),
 ];
 
@@ -81,7 +73,7 @@ export default function DashboardLayout() {
 						) : (
 							<DataTable
 								data={upcomingTasks}
-								columns={upcomingTaskColumns}
+								columns={todayTaskColumns}
 							/>
 						)}
 					</Progress>

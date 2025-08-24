@@ -90,6 +90,7 @@ export default function TasksLayout() {
 											priority={task.priority}
 											onSubmit={onSubmit}
 											errorSanitize={errorSanitize}
+											reminder={task.reminder}
 										/>
 									</motion.div>
 								))

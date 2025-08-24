@@ -18,6 +18,8 @@ export const postSchema = z.object({
         .string()
         .trim()
         .optional(),
+
+    reminder: z.boolean().optional().default(false),
 });
 
 export type PostSchema = z.infer<typeof postSchema>;

@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// data-table.tsx
-
-"use client";
 
 import {
 	type ColumnDef,

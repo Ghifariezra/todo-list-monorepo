@@ -6,6 +6,7 @@ export interface TaskAdd {
     schedule: Date | null;
     priority: TaskPriority;
     description?: string | null;
+    reminder?: boolean;
 }
 
 export interface TaskUpdate extends TaskAdd {
@@ -21,6 +22,7 @@ export interface Task {
     status: TaskStatus;
     created_at: string;
     title: string;
+    reminder: boolean;
 }
 export interface TaskResponse {
     status: string;
@@ -49,4 +51,5 @@ export type CardProps = {
     editId?: string | null;
     onSubmit?: (data: TaskUpdate) => void;
     errorSanitize?: string;
+    reminder?: boolean;
 };

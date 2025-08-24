@@ -19,6 +19,7 @@ export const updateSchema = z.object({
         .string()
         .trim()
         .optional(),
+    reminder: z.boolean().optional().default(false),
 });
 
 export type UpdateSchema = z.infer<typeof updateSchema>;

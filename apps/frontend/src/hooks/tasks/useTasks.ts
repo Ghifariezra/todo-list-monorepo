@@ -61,6 +61,7 @@ export const useTasks = () => {
             schedule: data.schedule ? normalizeDate(new Date(data.schedule)) : null,
             priority: data.priority as TaskUpdate['priority'],
             description: data.description ? xss(data.description.trim()) : null,
+            reminder: data.reminder as TaskUpdate['reminder']
         };
 
         if (
