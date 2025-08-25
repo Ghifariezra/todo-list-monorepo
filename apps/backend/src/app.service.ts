@@ -216,14 +216,16 @@ export class AppService {
     }
   }
   
-  // Cron jalan tiap menit (buat testing)
-  @Cron(CronExpression.EVERY_DAY_AT_7AM)
+  // Cron jalan tiap menit (buat testing): FOR DEVELOPMENT
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleDailyReminder() {
     console.log("⏰ Menjalankan pengingat tugas...");
     await this.sendAllReminders();
   }
 
+  // Cron jalan Jam 8 AM setiap hari: FOR PRODUCTION
   async sendAllReminders() {
+    console.log("⏰ Menjalankan pengingat tugas...");
     const today = this.formatDateToString(new Date());
 
     // Ambil hanya task hari ini yang reminder = true

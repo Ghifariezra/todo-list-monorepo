@@ -11,6 +11,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { ThrottlerModule, ThrottlerGuard, minutes } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CronController } from './cron/cron.controller';
 
 @Module({
   imports: [
@@ -44,7 +45,10 @@ import { ScheduleModule } from '@nestjs/schedule';
       errorMessage: "Ups, kamu terlalu semangat! Tunggu sebentar, ya. Nanti kita lanjut lagi. 🏃💨",
     }),
   ],
-  controllers: [AppController],
+  controllers: [
+    AppController, 
+    CronController
+  ],
   providers: [
     AppService,
     XssCleanPipe,
