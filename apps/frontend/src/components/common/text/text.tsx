@@ -1,8 +1,13 @@
 import{ memo } from 'react';
 import { motion } from 'motion/react';
 
-const Heading = memo(({ children }: { children: React.ReactNode }) => {
-	return <motion.h1 className="text-2xl sm:text-3xl font-bold duration-500 ease-in">{children}</motion.h1>;
+const Heading = memo(({ children, className }: { children: React.ReactNode, className?: string }) => {
+	return (
+		<motion.h1
+			className={`text-2xl sm:text-3xl font-bold duration-500 ease-in ${className}`}>
+			{children}
+		</motion.h1>
+	);
 });
 
 const Paragraph = memo(({ children, className }: { children: React.ReactNode, className?: string }) => {

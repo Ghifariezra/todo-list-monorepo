@@ -9,8 +9,13 @@ function Third() {
 		<motion.div className="grid sm:grid-cols-2 items-center justify-center gap-8 sm:gap-4">
 			<motion.div className="flex flex-col gap-4 px-6 py-12 order-2 sm:order-1">
 				<motion.div className="flex flex-col gap-4">
-					<Heading>Siapa yang Cocok Menggunakan Achievly?</Heading>
-					<Paragraph>Apakah Anda sering lupa tugas atau kesulitan mengelola rencana? Achievly adalah solusi untuk Anda.</Paragraph>
+					<Heading className="!text-center md:!text-left">
+						Siapa yang Cocok Menggunakan Achievly?
+					</Heading>
+					<Paragraph className="!text-center md:!text-left">
+						Apakah Anda sering lupa tugas atau kesulitan mengelola
+						rencana? Achievly adalah solusi untuk Anda.
+					</Paragraph>
 				</motion.div>
 				<CardHome Categories={Categories} />
 			</motion.div>
