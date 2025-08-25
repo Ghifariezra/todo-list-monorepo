@@ -17,7 +17,6 @@ export class AppController {
   ) { }
 
   @Get('google')
-
   @Throttle({
     default: {
       limit: 5,
@@ -25,7 +24,6 @@ export class AppController {
     }
   })
   @Post('signup')
-  
   signup(@Body() body: CreateUserDto) {
     return this.appService.signup(body);
   }
