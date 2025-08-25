@@ -35,7 +35,7 @@ import { CronController } from './cron/cron.controller';
     ThrottlerModule.forRoot({
       throttlers: [{
         ttl: minutes(1), 
-        limit: 10,
+        limit: 100,
         ignoreUserAgents: [
           /googlebot/i,
           /bingbot/i,
@@ -46,7 +46,7 @@ import { CronController } from './cron/cron.controller';
     }),
   ],
   controllers: [
-    AppController, 
+    AppController,
     CronController
   ],
   providers: [

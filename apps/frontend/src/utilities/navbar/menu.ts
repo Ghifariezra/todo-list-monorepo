@@ -7,7 +7,6 @@ export const MenusData: Array<Menus> = [
     // Dashboard
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Tasks', href: '/dashboard/tasks' },
-    { name: 'Projects', href: '/dashboard/projects' },
     
     // Auth
     { name: 'Login', href: '/auth/login' },

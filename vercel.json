@@ -26,11 +26,5 @@
             "src": "/(.*)",
             "dest": "/apps/frontend/dist/index.html"
         }
-    ],
-    "cron": [
-        {
-            "path": "/api/cron/daily-reminder",
-            "schedule": "0 8 * * *"
-        }
     ]
 }

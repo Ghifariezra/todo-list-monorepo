@@ -8,7 +8,7 @@ export const useMenus = ({ user }: { user: UserProfile | null }) => {
     const menus = useMemo(() => {
         const excludeNames = user
             ? ['Home', 'About', 'Login', 'Sign Up']
-            : ['Dashboard', 'Tasks', 'Projects', 'Profile', 'Logout'];
+            : ['Dashboard', 'Tasks', 'Profile', 'Logout'];
 
         return MenusData.filter(menu => !excludeNames.includes(menu.name));
     }, [user]);

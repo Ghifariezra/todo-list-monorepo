@@ -1,30 +1,48 @@
-import Loader from '@/components/common/loading/loading';
-import { ThemeProvider } from '@/components/providers/theme-provider';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
-import Protected from '@/components/protected/protected';
+import Loader from "@/components/common/loading/loading";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import Protected from "@/components/protected/protected";
+import ProtectedNotAuth from "@/components/protected/protected-not-auth";
 
-const Main = lazy(() => import('@/router/main'));
-const Home = lazy(() => import('@/components/layouts/home/home'));
-const About = lazy(() => import('@/components/layouts/about'));
-const Login = lazy(() => import('@/components/layouts/auth/login'));
-const Signup = lazy(() => import('@/components/layouts/auth/signup'));
-const Dashboard = lazy(() => import('@/components/layouts/auth/dashboard/dashboard'));
-const Projects = lazy(() => import('@/components/layouts/auth/projects/projects'));
-const Tasks = lazy(() => import('@/components/layouts/auth/tasks/tasks'));
-const Profile = lazy(() => import('@/components/layouts/auth/dashboard/profile'));
+const Main = lazy(() => import("@/router/main"));
+const Home = lazy(() => import("@/components/layouts/home/home"));
+const About = lazy(() => import("@/components/layouts/about"));
+const Login = lazy(() => import("@/components/layouts/auth/login"));
+const Signup = lazy(() => import("@/components/layouts/auth/signup"));
+const Dashboard = lazy(
+	() => import("@/components/layouts/auth/dashboard/dashboard")
+);
+const Tasks = lazy(() => import("@/components/layouts/auth/tasks/tasks"));
+const Profile = lazy(
+	() => import("@/components/layouts/auth/dashboard/profile")
+);
 
-const NotFound = lazy(() => import('@/components/common/not-found/not-found'));
+const NotFound = lazy(() => import("@/components/common/not-found/not-found"));
 
 const router = createBrowserRouter([
 	{
-		path: '/',
+		path: "/",
 		Component: Main,
 		children: [
-			{ index: true, Component: Home },
-			{ path: 'about', Component: About },
 			{
-				path: 'dashboard',
+				index: true,
+				element: (
+					<ProtectedNotAuth>
+						<Home />
+					</ProtectedNotAuth>
+				),
+			},
+			{
+				path: "about",
+				element: (
+					<ProtectedNotAuth>
+						<About />
+					</ProtectedNotAuth>
+				),
+			},
+			{
+				path: "dashboard",
 				children: [
 					{
 						index: true,
@@ -35,7 +53,7 @@ const router = createBrowserRouter([
 						),
 					},
 					{
-						path: 'tasks',
+						path: "tasks",
 						element: (
 							<Protected>
 								<Tasks />
@@ -43,15 +61,7 @@ const router = createBrowserRouter([
 						),
 					},
 					{
-						path: 'projects',
-						element: (
-							<Protected>
-								<Projects />
-							</Protected>
-						),
-					},
-					{
-						path: 'profile',
+						path: "profile",
 						element: (
 							<Protected>
 								<Profile />
@@ -61,13 +71,27 @@ const router = createBrowserRouter([
 				],
 			},
 			{
-				path: 'auth',
+				path: "auth",
 				children: [
-					{ path: 'login', Component: Login },
-					{ path: 'signup', Component: Signup },
+					{
+						path: "login",
+						element: (
+							<ProtectedNotAuth>
+								<Login />
+							</ProtectedNotAuth>
+						),
+					},
+					{
+						path: "signup",
+						element: (
+							<ProtectedNotAuth>
+								<Signup />
+							</ProtectedNotAuth>
+						),
+					},
 				],
 			},
-			{ path: '*', Component: NotFound },
+			{ path: "*", Component: NotFound },
 		],
 	},
 ]);

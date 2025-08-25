@@ -25,18 +25,19 @@ export const useTasks = () => {
     const { updateTask, isLoading: isLoadingUpdate } = useTasksPatchMutation();
     const [errorSanitize, setErrorSanitize] = useState("");
 
-    const todayTasks = useMemo(
-        () =>
-            tasks.filter((task) => {
-                const tasks = task.schedule === normalizeDate(new Date()).toDateString();
-                return tasks;
-            }),
-        [tasks]
-    );
+    const todayTasks = useMemo(() => {
+        const today = normalizeDate(new Date()).toDateString();
+        return tasks.filter(
+            (task) => normalizeDate(new Date(task.schedule)).toDateString() === today && task.reminder === false
+        );
+    }, [tasks]);
 
     const upcomingTasks = useMemo(() => {
         const upcomingTasks = tasks.filter((task) => {
-            const tasks = task.schedule !== normalizeDate(new Date()).toDateString();
+            const today = normalizeDate(new Date()).toDateString();
+            const schedule = normalizeDate(new Date(task.schedule)).toDateString();
+            
+            const tasks = schedule > today;
             return tasks;
         }).sort((a, b) => {
             const dateA = new Date(a.schedule);
@@ -46,10 +47,14 @@ export const useTasks = () => {
         return upcomingTasks;
     }, [tasks]);
 
+    const currentlyTaks = useMemo(() => {
+        return upcomingTasks.filter((task) => task.status !== "deactivated");
+    }, [upcomingTasks]);
+
     const filteredTasks = useMemo(() => {
-        if (selected === "" || selected === "default") return tasks;
-        return tasks.filter((task) => task.priority === selected);
-    }, [tasks, selected]);
+        if (selected === "default") return currentlyTaks;
+        return currentlyTaks.filter((task) => task.priority === selected && task.status !== "deactivated");
+    }, [currentlyTaks, selected]);
 
     const handleEditToggle = useCallback((id: string) => {
         setEditToggle((prev) => !prev);
@@ -99,5 +104,5 @@ export const useTasks = () => {
         if (errorSanitize) setTimeout(() => setErrorSanitize(""), 3000);
     }, [errorSanitize]);
 
-    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize, todayTasks, upcomingTasks, filteredTasks, selected, setSelected, taskTitle, setTaskTitle };
+    return { tasks, isLoading, handleDelete, deleteId, isLoadingDelete, editToggle, handleEditToggle, editId, onSubmit, isLoadingUpdate, errorSanitize, todayTasks, upcomingTasks, filteredTasks, selected, setSelected, taskTitle, setTaskTitle, currentlyTaks };
 }

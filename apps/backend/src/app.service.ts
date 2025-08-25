@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid';
 import { CreateTaskDto, UpdateTaskDto } from './dto/tasks.dto';
 import nodemailer from "nodemailer";
 import Email, { normalizeDate } from './email/email';
-import { Cron, CronExpression } from '@nestjs/schedule';
+// import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AppService {
@@ -216,14 +216,13 @@ export class AppService {
     }
   }
   
-  // Cron jalan tiap menit (buat testing): FOR DEVELOPMENT
-  @Cron(CronExpression.EVERY_MINUTE)
+  // // Cron jalan tiap menit (buat testing): FOR DEVELOPMENT
+  // @Cron(CronExpression.EVERY_MINUTE)
   async handleDailyReminder() {
     console.log("⏰ Menjalankan pengingat tugas...");
     await this.sendAllReminders();
   }
 
-  // Cron jalan Jam 8 AM setiap hari: FOR PRODUCTION
   async sendAllReminders() {
     console.log("⏰ Menjalankan pengingat tugas...");
     const today = this.formatDateToString(new Date());
@@ -285,7 +284,7 @@ export class AppService {
             const taskIds = userTasks.map(t => t.id);
             await this.supabaseClient
               .from('tasks')
-              .update({ reminder: false })
+              .update({ reminder: false, status: 'deactivated' })
               .in('id', taskIds);
           }
         }

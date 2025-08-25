@@ -10,7 +10,7 @@ import { SelectPriority } from "@/components/common/selected/priority";
 
 export default function TasksLayout() {
 	const {
-		tasks,
+		currentlyTaks,
 		isLoading,
 		handleDelete,
 		isLoadingDelete,
@@ -47,7 +47,9 @@ export default function TasksLayout() {
 						<Heading>Tasks</Heading>
 					</motion.div>
 					<div className="flex items-center gap-2">
-						<h1 className="text-sm sm:text-lg font-bold">Priority:</h1>
+						<h1 className="text-sm sm:text-lg font-bold">
+							Priority:
+						</h1>
 						<SelectPriority
 							selected={selected}
 							onChange={setSelected}
@@ -64,38 +66,55 @@ export default function TasksLayout() {
 					)}
 					{!isLoading && (
 						<AnimatePresence mode="popLayout">
-							{(selected ? filteredTasks : tasks).length > 0 ? (
-								(selected ? filteredTasks : tasks).map((task) => (
-									<motion.div
-										key={task.id}
-										initial={{ opacity: 0, y: 30 }}
-										animate={{ opacity: 1, y: 0 }}
-										exit={{ opacity: 0, scaleY: 0, y: -30 }}
-										transition={{
-											duration: 0.7,
-											ease: "easeInOut",
-										}}>
-										<Progress
-											nameTask={task.title}
-											idCard={task.id}
-											onDelete={handleDelete}
-											isLoadingDelete={isLoadingDelete}
-											editToggle={editToggle}
-											editId={editId}
-											handleEditToggle={handleEditToggle}
-											description={task.notes}
-											date={normalizeDate(
-												new Date(task.schedule)
-											)}
-											priority={task.priority}
-											onSubmit={onSubmit}
-											errorSanitize={errorSanitize}
-											reminder={task.reminder}
-										/>
-									</motion.div>
-								))
+							{(selected ? filteredTasks : currentlyTaks).length >
+							0 ? (
+								(selected ? filteredTasks : currentlyTaks).map(
+									(task) => (
+										<motion.div
+											key={task.id}
+											initial={{ opacity: 0, y: 30 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{
+												opacity: 0,
+												scaleY: 0,
+												y: -30,
+											}}
+											transition={{
+												duration: 0.7,
+												ease: "easeInOut",
+											}}>
+											<Progress
+												nameTask={task.title}
+												idCard={task.id}
+												onDelete={handleDelete}
+												isLoadingDelete={
+													isLoadingDelete
+												}
+												editToggle={editToggle}
+												editId={editId}
+												handleEditToggle={
+													handleEditToggle
+												}
+												description={task.notes}
+												date={normalizeDate(
+													new Date(task.schedule)
+												)}
+												priority={task.priority}
+												onSubmit={onSubmit}
+												errorSanitize={errorSanitize}
+												reminder={task.reminder}
+											/>
+										</motion.div>
+									)
+								)
 							) : (
-								<Progress name="No tasks" />
+								<Progress name="No tasks">
+									<hr />
+									<p className="sm:text-base text-gray-500 ">
+										Ups, notes kamu masih kosong nih ✨
+										Tulis sedikit notes biar makin seru!
+									</p>
+								</Progress>
 							)}
 						</AnimatePresence>
 					)}
